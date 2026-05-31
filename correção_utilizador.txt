@@ -1,0 +1,32 @@
+funcinalidade para adicionar:
+
+1 - enviar sempre mensagens de erros quando ocorrer aos utilizadores;
+
+2 - para utilizador normal:
+
+- permitir aos usuário visualizar uma lista de quem são os seus seguidores, quem ele está seguindo;
+- mostrar nas noticições de cada usuário quando alguém começou a lhe seguir, quem  o deixou de seguir, quem comentou na sua publicação; 
+- adiciona a funcionalide eliminar para cada notificação do utilizador;
+- se utilizador marcar como lidas as noticições serão eliminadas so sistema;
+- adicionar funcioanlidade na pagina perfil do usuário para desativar ou ativar a sua conta;
+- dados necessário para criar conta: seu data de nome completo, nascimento, endereço, nacionalidade, sexo depois direciona direto pata uma pagina onde utilizadores precisa adicionar email, senha, senha confirmação (nota: este passos são obrigadores para concluir a criação da conta utilizador normall);
+- na criação da conta vereificar se este email ainda não existe no sistema, se já envia mensagem de erro, porque este email já existe;
+- utilizador não pode comentar publicações de um utilizador que ele não esteja seguindo;
+- adiconar a funcoinalidade de adicionar foto do perfil, as imagens enviadas serão armazenas em um pasta chamadas fotos_de_perfil nas pasta backend e no campo utilizador vai simpleste o endereco dessa imagem, e mostra sempre as imagens de casa utilizador, se não tiver imagens mostra um icone identicando se é mulher ou homem;
+- adicionar a funcoinalidade de editar o perfil do utilizador normal;
+- recuperação de senha se acesso
+- eguir/Deixar de seguir um utilizador 
+
+- Visualizar publicações em ordem cronológica
+
+- Uma publicação é composta por nome do autor, foto do autor, data da publicação, 
+texto, imagem(opcional), vídeo(opcional) , número de bazes e número de 
+comentários 
+
+- impedir múltiplos bazes do mesmo utilizador na mesma publicação. 
+- Editar comentários próprios; 
+- Excluir comentários próprios;  
+- o feed somente deve aprender publicações de utilizadores seguidos; 
+
+
+4 - corrija os erros de icons ou se não tiver imagens mostra um icon adequado ao sistema;

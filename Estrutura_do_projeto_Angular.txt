@@ -1,0 +1,384 @@
+# Estrutura Padrão de Componentes Angular — Projeto NzolaNet
+
+# 1. Visão Geral
+
+A aplicação Angular do projeto NzolaNet deverá seguir uma arquitetura modular, organizada e escalável.
+
+Esta estrutura tem como objetivos:
+
+* Separação de responsabilidades
+* Reutilização de componentes
+* Organização profissional do código
+* Escalabilidade
+* Facilidade de manutenção
+* Melhor desempenho
+* Padronização do desenvolvimento
+
+---
+
+# 2. Estrutura Profissional do Projeto Angular
+
+```text
+src/
+│
+├── app/
+│   │
+│   ├── core/
+│   │   ├── guards/
+│   │   ├── interceptors/
+│   │   ├── services/
+│   │   ├── models/
+│   │   └── core.module.ts
+│   │
+│   ├── shared/
+│   │   ├── components/
+│   │   ├── directives/
+│   │   ├── pipes/
+│   │   ├── interfaces/
+│   │   └── shared.module.ts
+│   │
+│   ├── features/
+│   │   │
+│   │   ├── auth/
+│   │   ├── feed/
+│   │   ├── posts/
+│   │   ├── profile/
+│   │   └── notifications/
+│   │
+│   ├── layout/
+│   │   ├── navbar/
+│   │   ├── sidebar/
+│   │   └── footer/
+│   │
+│   ├── app-routing.module.ts
+│   ├── app.component.ts
+│   └── app.module.ts
+│
+├── assets/
+├── environments/
+└── styles/
+```
+
+---
+
+# 3. Diagrama UML da Estrutura Angular
+
+```text
+┌───────────────────────────────┐
+│          APP MODULE           │
+└──────────────┬────────────────┘
+               │
+ ┌─────────────┼───────────────────────────────┐
+ │             │               │               │
+ ▼             ▼               ▼               ▼
+
+┌───────────┐ ┌───────────┐ ┌───────────┐ ┌────────────┐
+│   CORE    │ │  SHARED   │ │ FEATURES  │ │   LAYOUT   │
+│  MODULE   │ │  MODULE   │ │  MODULES  │ │   MODULE   │
+└─────┬─────┘ └─────┬─────┘ └─────┬─────┘ └─────┬──────┘
+      │             │             │             │
+      ▼             ▼             ▼             ▼
+
+┌──────────┐ ┌──────────┐ ┌────────────┐ ┌──────────┐
+│ Guards   │ │ Buttons  │ │ Auth       │ │ Navbar   │
+│ Services │ │ Modals   │ │ Feed       │ │ Sidebar  │
+│ Models   │ │ Pipes    │ │ Posts      │ │ Footer   │
+│ Interc.  │ │ Inputs   │ │ Profile    │ │          │
+└──────────┘ └──────────┘ │ Notifications│ └──────────┘
+                           └────────────┘
+```
+
+---
+
+# 4. Estrutura UML do Core Module
+
+```text
+┌─────────────────────────┐
+│       CORE MODULE       │
+├─────────────────────────┤
+│ AuthService             │
+│ TokenInterceptor        │
+│ AuthGuard               │
+│ UserModel               │
+│ HttpInterceptor         │
+└─────────────────────────┘
+```
+
+---
+
+# 5. Estrutura UML do Shared Module
+
+```text
+┌─────────────────────────┐
+│      SHARED MODULE      │
+├─────────────────────────┤
+│ ButtonComponent         │
+│ ModalComponent          │
+│ LoadingComponent        │
+│ AvatarComponent         │
+│ Pipes                   │
+│ Directives              │
+└─────────────────────────┘
+```
+
+---
+
+# 6. Estrutura UML dos Feature Modules
+
+## 6.1 Auth Module
+
+```text
+┌─────────────────────────┐
+│       AUTH MODULE       │
+├─────────────────────────┤
+│ LoginComponent          │
+│ RegisterComponent       │
+│ ForgotPasswordComponent │
+│ AuthService             │
+└─────────────────────────┘
+```
+
+---
+
+## 6.2 Feed Module
+
+```text
+┌─────────────────────────┐
+│       FEED MODULE       │
+├─────────────────────────┤
+│ HomeFeedComponent       │
+│ FollowingFeedComponent  │
+│ FeedService             │
+└─────────────────────────┘
+```
+
+---
+
+## 6.3 Posts Module
+
+```text
+┌───────────────────────────┐
+│       POSTS MODULE        │
+├───────────────────────────┤
+│ CreatePostComponent       │
+│ EditPostComponent         │
+│ PostCardComponent         │
+│ CommentListComponent      │
+│ LikeComponent             │
+│ PostService               │
+└───────────────────────────┘
+```
+
+---
+
+## 6.4 Profile Module
+
+```text
+┌───────────────────────────┐
+│      PROFILE MODULE       │
+├───────────────────────────┤
+│ ProfilePageComponent      │
+│ EditProfileComponent      │
+│ FollowersComponent        │
+│ FollowingComponent        │
+│ ProfileService            │
+└───────────────────────────┘
+```
+
+---
+
+## 6.5 Notifications Module
+
+```text
+┌──────────────────────────────┐
+│    NOTIFICATIONS MODULE      │
+├──────────────────────────────┤
+│ NotificationListComponent    │
+│ NotificationService          │
+└──────────────────────────────┘
+```
+
+---
+
+# 7. Estrutura Padrão de um Componente Angular
+
+## Exemplo: PostCardComponent
+
+```text
+post-card/
+│
+├── post-card.component.ts
+├── post-card.component.html
+├── post-card.component.scss
+└── post-card.component.spec.ts
+```
+
+---
+
+# 8. Diagrama UML de um Componente Angular
+
+```text
+┌────────────────────────────┐
+│     PostCardComponent      │
+├────────────────────────────┤
+│ @Input() post              │
+├────────────────────────────┤
+│ likePost()                 │
+│ commentPost()              │
+│ deletePost()               │
+└────────────────────────────┘
+```
+
+---
+
+# 9. Fluxo UML da Aplicação Angular
+
+```text
+● Início
+   │
+   ▼
+┌────────────────────┐
+│ Carregar Angular   │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│ App Routing        │
+└─────────┬──────────┘
+          │
+ ┌────────┼────────────────────┐
+ ▼        ▼                    ▼
+Feed     Auth               Profile
+ │         │                    │
+ ▼         ▼                    ▼
+Services  Guards           Services
+ │         │                    │
+ └─────────┴───────────────┬────┘
+                            ▼
+                     Atualizar UI
+                            │
+                            ▼
+                           ◎ Fim
+```
+
+---
+
+# 10. Estrutura UML do Routing
+
+```text
+┌──────────────┐
+│ APP ROUTING  │
+└──────┬───────┘
+       │
+ ┌─────┼─────────────────────────────┐
+ │     │              │              │
+ ▼     ▼              ▼              ▼
+/auth  /feed       /profile    /notifications
+```
+
+---
+
+# 11. Estrutura UML do Layout
+
+```text
+┌───────────────────────┐
+│     LAYOUT MODULE     │
+├───────────────────────┤
+│ NavbarComponent       │
+│ SidebarComponent      │
+│ FooterComponent       │
+└───────────────────────┘
+```
+
+---
+
+# 12. Exemplo de Código Angular
+
+## post-card.component.ts
+
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-post-card',
+  templateUrl: './post-card.component.html',
+  styleUrls: ['./post-card.component.scss']
+})
+export class PostCardComponent {
+
+  @Input() post: any;
+
+  likePost() {}
+
+  commentPost() {}
+
+  deletePost() {}
+}
+```
+
+---
+
+# 13. Boas Práticas Recomendadas
+
+## Utilizar
+
+* Lazy Loading
+* Reactive Forms
+* Guards
+* Interceptors
+* DTOs
+* Interfaces
+* SOLID
+* Componentização
+* Services
+* RxJS
+* State Management
+
+---
+
+# 14. Vantagens da Estrutura
+
+## Organização
+
+Separação clara das funcionalidades.
+
+---
+
+## Escalabilidade
+
+Facilidade para crescimento do sistema.
+
+---
+
+## Reutilização
+
+Componentes reutilizáveis.
+
+---
+
+## Segurança
+
+Centralização da autenticação.
+
+---
+
+## Manutenção
+
+Código limpo e modular.
+
+---
+
+# 15. Conclusão
+
+A estrutura Angular apresentada segue padrões modernos utilizados em aplicações profissionais.
+
+Ela atende perfeitamente os requisitos do projeto NzolaNet, oferecendo:
+
+* Organização profissional
+* Arquitetura modular
+* Separação de responsabilidades
+* Escalabilidade
+* Facilidade de manutenção
+* Melhor desempenho
+* Reutilização de componentes
+* Segurança e padronização do sistema

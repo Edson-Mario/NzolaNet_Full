@@ -1,0 +1,26 @@
+1- para utilizador admin:
+
+- nãõ pode realizar publicação, comentar, seguir ou deixar de seguir;
+- suas funicionalidade são: gerenciar utilizadores, gerenciar publicações ou comentarios(pode visualizar e eliminar)
+- as publicações deve ser exibidas por ordem cronologica(ou seja: do mais recentes ao mais antigo);
+- torna a pagina do admin "administração" como a pgina principa para o admin;
+- admin não tem feed(não pode publicar e comentar), só pode visualizar listas de publicações e um dropdown para mostrar os comentarios que esta publicação possui e adicionar possibilida de do admin eleminar a publicação ou comentario;
+-admin pode removar utilizadores desativados;
+- adiciona a funcinalidade de alterar o email e senha do admin;
+
+
+- no painel do admin, os card de informaçãos são links para visualizar cada informação especifica. 
+    - adiciona as funcinalidade para cada cards:
+    - Total Utilizadores: link para visualizar lista de utilizadores;
+    - Total Comentários: link para visulaizar lista de comentarios ( o admin pode filtar cometarios pela hora, dia, semana, e mes e ano);
+    - Utilizadores Ativos: link para visaulizar lista de utilizadores ativos;
+    - Total Publicações: link para visulaizar lista de publicações ( o admin pode filtar cometarios pela hora, dia, semana, e mes e ano);
+    - Total Bazes: os 10 utilizadores com mais bazes;
+
+    - Todos os link do cards renderizar as suas informações na componente com a class="users-section" e altar o nome da class para "informçãoes gerais";
+
+    - remove a pagina perfil, feed, noticições, administração e remove o menu lateral para o admin;
+    - adiciona a funcionalidade pesquisar utilizadores pelo nome, data de nascimento, endereço, 
+    - funcinalidade adicionar novo admin(criando novo email e senha);
+
+

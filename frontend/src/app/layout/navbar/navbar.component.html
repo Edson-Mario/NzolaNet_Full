@@ -1,0 +1,55 @@
+<nav class="navbar">
+  <div class="navbar-left">
+    <a [routerLink]="auth.isAdmin() ? '/admin' : '/feed'" class="logo">
+      <span class="logo-icon">N</span>
+      <span class="logo-text">NzolaNet</span>
+    </a>
+  </div>
+
+  <!-- Normal User: Search + Nav -->
+  <div class="navbar-center" *ngIf="!auth.isAdmin()">
+    <div class="search-box">
+      <span class="search-icon">&#128269;</span>
+      <input
+        type="text"
+        placeholder="Pesquisar..."
+        [(ngModel)]="searchQuery"
+      />
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <!-- Normal User links -->
+    <ng-container *ngIf="!auth.isAdmin()">
+      <a routerLink="/feed" class="nav-icon" (click)="refreshFeed()" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: true}">
+        <span>&#127968;</span>
+      </a>
+
+      <a routerLink="/notifications" class="nav-icon notification-icon" [routerLinkActive]="'active'">
+        <span>&#128276;</span>
+        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </a>
+    </ng-container>
+
+    <!-- Theme toggle (both) -->
+    <button class="nav-icon" (click)="toggleTheme()">
+      <span>{{ theme.isDark() ? '&#9728;&#65039;' : '&#127769;' }}</span>
+    </button>
+
+    <!-- User menu -->
+    <div class="user-menu" (click)="showUserMenu = !showUserMenu">
+      <div class="avatar">
+        <img *ngIf="auth.currentUser()?.fotoPerfil" [src]="auth.currentUser()?.fotoPerfil" alt="avatar" />
+        <svg *ngIf="!auth.currentUser()?.fotoPerfil" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div class="dropdown" *ngIf="showUserMenu">
+        <a *ngIf="!auth.isAdmin()" [routerLink]="['/profile', auth.currentUser()?.id]" (click)="showUserMenu = false">
+          Perfil
+        </a>
+        <button (click)="logout()">Sair</button>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,36 @@
+<div class="notifications-page">
+  <div class="notifications-header">
+    <h1>Notificações</h1>
+    <button (click)="markAllAsRead()" *ngIf="notifications.length > 0">
+      Marcar todas como lidas
+    </button>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="notifications-list" *ngIf="!loading">
+    <div
+      class="notification-item"
+      *ngFor="let n of notifications; trackBy: trackByNotificationId"
+      [class.unread]="!n.lida"
+      (click)="markAsRead(n.id)"
+    >
+      <div class="notif-icon" [innerHTML]="getIcon(n.tipo)"></div>
+      <div class="notif-content">
+        <p>{{ n.mensagem }}</p>
+        <span class="notif-time">{{ n.createdAt | timeAgo }}</span>
+      </div>
+      <button
+        class="delete-btn"
+        (click)="deleteNotification(n.id); $event.stopPropagation()"
+        title="Eliminar"
+      >&#128465;</button>
+    </div>
+
+    <div class="empty" *ngIf="notifications.length === 0">
+      <p>Sem notificações</p>
+    </div>
+  </div>
+</div>

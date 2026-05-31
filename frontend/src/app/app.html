@@ -1,0 +1,13 @@
+<div class="app-layout" *ngIf="auth.isLoggedIn(); else authLayout">
+  <app-navbar></app-navbar>
+  <div class="app-content" [class.admin-layout]="auth.isAdmin()">
+    <app-sidebar class="sidebar-container" *ngIf="!auth.isAdmin()"></app-sidebar>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<ng-template #authLayout>
+  <router-outlet></router-outlet>
+</ng-template>

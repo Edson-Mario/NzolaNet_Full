@@ -1,0 +1,27 @@
+<div class="create-post" [class.expanded]="expanded">
+  <div class="create-header">
+    <div class="avatar">
+      <img *ngIf="auth.currentUser()?.fotoPerfil" [src]="auth.currentUser()?.fotoPerfil" alt="avatar" />
+      <svg *ngIf="!auth.currentUser()?.fotoPerfil" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+    <input
+      type="text"
+      placeholder="No que está a pensar?"
+      [(ngModel)]="texto"
+      (focus)="expanded = true"
+      (keyup.enter)="submit()"
+    />
+  </div>
+
+  <div class="create-actions" *ngIf="expanded">
+    <div class="create-options">
+      <button class="option-btn">&#128247; Foto</button>
+      <button class="option-btn">&#127909; Vídeo</button>
+    </div>
+    <button class="btn-publish" (click)="submit()" [disabled]="loading || !texto.trim()">
+      {{ loading ? '...' : 'Publicar' }}
+    </button>
+  </div>
+</div>

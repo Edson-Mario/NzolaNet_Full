@@ -1,0 +1,78 @@
+{
+  "APP": {
+    "NAME": "NzolaNet"
+  },
+  "NAV": {
+    "HOME": "Início",
+    "FEED": "Feed",
+    "PROFILE": "Perfil",
+    "NOTIFICATIONS": "Notificações",
+    "ADMIN": "Administração",
+    "LOGOUT": "Sair",
+    "SEARCH": "Pesquisar..."
+  },
+  "AUTH": {
+    "LOGIN": "Entrar",
+    "REGISTER": "Registar",
+    "FORGOT_PASSWORD": "Esqueceu a senha?",
+    "EMAIL": "Email",
+    "PASSWORD": "Senha",
+    "CONFIRM_PASSWORD": "Confirmar senha",
+    "NAME": "Nome",
+    "BIO": "Biografia",
+    "NO_ACCOUNT": "Não tem conta?",
+    "HAS_ACCOUNT": "Já tem conta?",
+    "RESET_PASSWORD": "Recuperar senha",
+    "SEND": "Enviar"
+  },
+  "POST": {
+    "CREATE": "Criar publicação",
+    "WRITE": "No que está a pensar?",
+    "PUBLISH": "Publicar",
+    "EDIT": "Editar",
+    "DELETE": "Eliminar",
+    "COMMENTS": "comentários",
+    "BAZE": "Baze",
+    "BAZES": "bazes",
+    "SHARE": "Partilhar"
+  },
+  "PROFILE": {
+    "EDIT": "Editar perfil",
+    "FOLLOWERS": "Seguidores",
+    "FOLLOWING": "Seguindo",
+    "FOLLOW": "Seguir",
+    "UNFOLLOW": "Deixar de seguir",
+    "POSTS": "Publicações",
+    "PRIVACY": "Privacidade",
+    "PUBLIC": "Público",
+    "PRIVATE": "Privado"
+  },
+  "NOTIFICATION": {
+    "TITLE": "Notificações",
+    "MARK_READ": "Marcar como lida",
+    "MARK_ALL_READ": "Marcar todas como lidas",
+    "EMPTY": "Sem notificações"
+  },
+  "ADMIN": {
+    "DASHBOARD": "Painel",
+    "USERS": "Utilizadores",
+    "POSTS": "Publicações",
+    "COMMENTS": "Comentários",
+    "REPORTS": "Denúncias",
+    "SETTINGS": "Configurações",
+    "TOTAL_USERS": "Total Utilizadores",
+    "TOTAL_POSTS": "Total Publicações",
+    "TOTAL_COMMENTS": "Total Comentários",
+    "TOTAL_BAZES": "Total Bazes",
+    "ACTIVE_USERS": "Utilizadores Ativos"
+  },
+  "COMMON": {
+    "SAVE": "Guardar",
+    "CANCEL": "Cancelar",
+    "DELETE": "Eliminar",
+    "CONFIRM": "Confirmar",
+    "LOADING": "A carregar...",
+    "ERROR": "Ocorreu um erro",
+    "SUCCESS": "Operação realizada com sucesso"
+  }
+}

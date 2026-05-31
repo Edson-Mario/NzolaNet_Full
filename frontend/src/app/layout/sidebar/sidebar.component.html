@@ -1,0 +1,31 @@
+<aside class="sidebar">
+  <div class="user-card">
+    <div class="avatar">
+      <img *ngIf="auth.currentUser()?.fotoPerfil" [src]="auth.currentUser()?.fotoPerfil" alt="avatar" />
+      <svg *ngIf="!auth.currentUser()?.fotoPerfil" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+    <h3>{{ auth.currentUser()?.nome }}</h3>
+    <p>{{ auth.currentUser()?.email }}</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/feed" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <span class="icon">&#127968;</span>
+      <span>Feed</span>
+    </a>
+    <a [routerLink]="['/profile', auth.currentUser()?.id]" routerLinkActive="active">
+      <span class="icon">&#128100;</span>
+      <span>Perfil</span>
+    </a>
+    <a routerLink="/notifications" routerLinkActive="active">
+      <span class="icon">&#128276;</span>
+      <span>Notificações</span>
+    </a>
+    <a routerLink="/admin" *ngIf="auth.isAdmin()" routerLinkActive="active">
+      <span class="icon">&#9881;&#65039;</span>
+      <span>Administração</span>
+    </a>
+  </nav>
+</aside>

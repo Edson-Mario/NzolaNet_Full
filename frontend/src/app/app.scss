@@ -1,0 +1,32 @@
+.app-layout {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.app-content {
+  display: flex;
+  min-height: calc(100vh - 60px);
+
+  &.admin-layout {
+    .main-content {
+      max-width: 100%;
+      padding: 20px;
+    }
+  }
+}
+
+.sidebar-container {
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    display: none;
+  }
+}

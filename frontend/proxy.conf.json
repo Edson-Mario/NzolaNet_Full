@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/proxyrc.json",
+  "/api": {
+    "target": "http://localhost:5227",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

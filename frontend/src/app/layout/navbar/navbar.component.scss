@@ -1,0 +1,147 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.navbar-left {
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 22px;
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+  }
+}
+
+.navbar-center {
+  flex: 1;
+  max-width: 400px;
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 8px 16px;
+    gap: 8px;
+
+    input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+  }
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .nav-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    text-decoration: none;
+    font-size: 18px;
+    position: relative;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+
+    &:hover, &.active {
+      background: var(--primary-light);
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e74c3c;
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+  }
+
+  .user-menu {
+    position: relative;
+    cursor: pointer;
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--primary);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 180px;
+      overflow: hidden;
+
+      a, button {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        text-align: left;
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--bg-secondary);
+        }
+      }
+    }
+  }
+}

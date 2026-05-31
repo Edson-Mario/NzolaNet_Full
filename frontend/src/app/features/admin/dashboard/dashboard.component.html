@@ -1,0 +1,361 @@
+<div class="admin-page">
+  <div class="admin-header">
+    <h1>Painel</h1>
+    <span class="admin-name">{{ userName }}</span>
+  </div>
+
+  <!-- Dashboard Stats Cards -->
+  <div class="stats-grid" *ngIf="stats">
+    <div class="stat-card users" (click)="showView('users')">
+      <div class="stat-icon">&#128100;</div>
+      <div class="stat-info">
+        <h3>{{ stats.totalUtilizadores }}</h3>
+        <p>Total Utilizadores</p>
+      </div>
+    </div>
+    <div class="stat-card active" (click)="showView('active-users')">
+      <div class="stat-icon">&#9889;</div>
+      <div class="stat-info">
+        <h3>{{ stats.utilizadoresAtivos }}</h3>
+        <p>Utilizadores Ativos</p>
+      </div>
+    </div>
+    <div class="stat-card posts" (click)="showView('posts')">
+      <div class="stat-icon">&#128221;</div>
+      <div class="stat-info">
+        <h3>{{ stats.totalPublicacoes }}</h3>
+        <p>Total Publicações</p>
+      </div>
+    </div>
+    <div class="stat-card comments" (click)="showView('comments')">
+      <div class="stat-icon">&#128172;</div>
+      <div class="stat-info">
+        <h3>{{ stats.totalComentarios }}</h3>
+        <p>Total Comentários</p>
+      </div>
+    </div>
+    <div class="stat-card bazes" (click)="showView('top-bazes')">
+      <div class="stat-icon">&#128077;</div>
+      <div class="stat-info">
+        <h3>{{ stats.totalBazes }}</h3>
+        <p>Total Bazes</p>
+      </div>
+    </div>
+    <div class="stat-card inactive" (click)="showView('inactive-users')">
+      <div class="stat-icon">&#128683;</div>
+      <div class="stat-info">
+        <h3>{{ stats.utilizadoresDesativados }}</h3>
+        <p>Desativados</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-section">
+
+    <!-- Dashboard View -->
+    <div class="dashboard-info" *ngIf="activeView === 'dashboard'">
+      <h2>Bem-vindo ao Painel de Administracao</h2>
+      <p>Clique nos cards acima para gerenciar o sistema.</p>
+
+      <div class="admin-actions">
+        <button class="btn-action" (click)="showView('create-admin')">+ Criar Admin</button>
+        <button class="btn-action" (click)="showView('account')">Alterar Email/Senha</button>
+      </div>
+    </div>
+
+    <!-- Users View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'users' || activeView === 'active-users' || activeView === 'inactive-users'">
+      <div class="section-header">
+        <h2>
+          {{ activeView === 'users' ? 'Todos os Utilizadores' : activeView === 'active-users' ? 'Utilizadores Ativos' : 'Utilizadores Desativados' }}
+        </h2>
+        <div class="section-actions">
+          <input
+            type="text"
+            [(ngModel)]="userSearch"
+            placeholder="Pesquisar por nome, email, endereco..."
+            (keyup.enter)="searchUsers()"
+            class="search-input"
+          />
+          <button class="btn-search" (click)="searchUsers()">Pesquisar</button>
+          <button
+            *ngIf="activeView === 'inactive-users'"
+            class="btn-danger"
+            (click)="removeInactive()"
+          >Remover Desativados</button>
+        </div>
+      </div>
+
+      <div class="table-container" *ngIf="users.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Estado</th>
+              <th>Data Nasc.</th>
+              <th>Endereco</th>
+              <th>Nacionalidade</th>
+              <th>Sexo</th>
+              <th>Posts</th>
+              <th>Bazes</th>
+              <th>Data</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users; trackBy: trackByAdminUserId">
+              <td>{{ user.id }}</td>
+              <td>{{ user.nome }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
+              <td>
+                <span [class.active-badge]="user.isActive" [class.inactive-badge]="!user.isActive">
+                  {{ user.isActive ? 'Ativo' : 'Desativado' }}
+                </span>
+              </td>
+              <td>{{ user.dataNascimento ? (user.dataNascimento | date:'shortDate') : '-' }}</td>
+              <td>{{ user.endereco || '-' }}</td>
+              <td>{{ user.nacionalidade || '-' }}</td>
+              <td>{{ user.sexo || '-' }}</td>
+              <td>{{ user.publicacoesCount }}</td>
+              <td>{{ user.bazesCount }}</td>
+              <td>{{ user.createdAt | date:'short' }}</td>
+              <td class="actions">
+                <button
+                  *ngIf="user.isActive && user.role !== 'admin'"
+                  class="btn-sm btn-warning"
+                  (click)="deactivateUser(user.id)"
+                  title="Desativar"
+                >&#128683;</button>
+                <button
+                  *ngIf="!user.isActive"
+                  class="btn-sm btn-success"
+                  (click)="activateUser(user.id)"
+                  title="Ativar"
+                >&#9889;</button>
+                <button
+                  *ngIf="user.role !== 'admin'"
+                  class="btn-sm btn-danger"
+                  (click)="deleteUser(user.id)"
+                  title="Eliminar"
+                >&#128465;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="empty" *ngIf="users.length === 0 && !loading">
+        <p>Nenhum utilizador encontrado.</p>
+      </div>
+    </div>
+
+    <!-- Posts View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'posts'">
+      <div class="section-header">
+        <h2>Publicacoes</h2>
+        <div class="filter-buttons">
+          <button [class.active]="postFilter === ''" (click)="filterPosts('')">Todos</button>
+          <button [class.active]="postFilter === 'hora'" (click)="filterPosts('hora')">Ultima Hora</button>
+          <button [class.active]="postFilter === 'dia'" (click)="filterPosts('dia')">Hoje</button>
+          <button [class.active]="postFilter === 'semana'" (click)="filterPosts('semana')">Semana</button>
+          <button [class.active]="postFilter === 'mes'" (click)="filterPosts('mes')">Mes</button>
+          <button [class.active]="postFilter === 'ano'" (click)="filterPosts('ano')">Ano</button>
+        </div>
+      </div>
+
+      <div class="table-container" *ngIf="posts.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Autor</th>
+              <th>Texto</th>
+              <th>Bazes</th>
+              <th>Comentarios</th>
+              <th>Data</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let post of posts; trackBy: trackByPostListItemId">
+              <tr>
+                <td>{{ post.id }}</td>
+                <td>{{ post.autorNome }}</td>
+                <td class="text-cell">{{ post.texto ? (post.texto | slice:0:80) : '-' }}{{ post.texto && post.texto.length > 80 ? '...' : '' }}</td>
+                <td>{{ post.bazesCount }}</td>
+                <td>
+                  <button class="btn-sm" (click)="toggleComments(post.id)" *ngIf="post.comentariosCount > 0">
+                    {{ post.comentariosCount }} &#9662;
+                  </button>
+                  <span *ngIf="post.comentariosCount === 0">0</span>
+                </td>
+                <td>{{ post.createdAt | date:'short' }}</td>
+                <td>
+                  <button class="btn-sm btn-danger" (click)="deletePost(post.id)">&#128465;</button>
+                </td>
+              </tr>
+              <!-- Comments Dropdown -->
+              <tr *ngIf="expandedPostComments[post.id]" class="comments-row">
+                <td colspan="7">
+                  <div class="comments-dropdown">
+                    <div class="comment-item" *ngFor="let c of expandedPostComments[post.id]; trackBy: trackByCommentListItemId">
+                      <strong>{{ c.autorNome }}:</strong> {{ c.texto }}
+                      <span class="comment-date">{{ c.createdAt | date:'short' }}</span>
+                      <button class="btn-sm btn-danger" (click)="deleteComment(c.id)">&#128465;</button>
+                    </div>
+                    <div *ngIf="expandedPostComments[post.id].length === 0">
+                      <p>Sem comentarios.</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      <div class="empty" *ngIf="posts.length === 0 && !loading">
+        <p>Nenhuma publicacao encontrada.</p>
+      </div>
+    </div>
+
+    <!-- Comments View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'comments'">
+      <div class="section-header">
+        <h2>Comentarios</h2>
+        <div class="filter-buttons">
+          <button [class.active]="commentFilter === ''" (click)="filterComments('')">Todos</button>
+          <button [class.active]="commentFilter === 'hora'" (click)="filterComments('hora')">Ultima Hora</button>
+          <button [class.active]="commentFilter === 'dia'" (click)="filterComments('dia')">Hoje</button>
+          <button [class.active]="commentFilter === 'semana'" (click)="filterComments('semana')">Semana</button>
+          <button [class.active]="commentFilter === 'mes'" (click)="filterComments('mes')">Mes</button>
+          <button [class.active]="commentFilter === 'ano'" (click)="filterComments('ano')">Ano</button>
+        </div>
+      </div>
+
+      <div class="table-container" *ngIf="comments.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Post ID</th>
+              <th>Autor</th>
+              <th>Texto</th>
+              <th>Data</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of comments; trackBy: trackByCommentListItemId">
+              <td>{{ c.id }}</td>
+              <td>{{ c.publicacaoId }}</td>
+              <td>{{ c.autorNome }}</td>
+              <td>{{ c.texto }}</td>
+              <td>{{ c.createdAt | date:'short' }}</td>
+              <td>
+                <button class="btn-sm btn-danger" (click)="deleteComment(c.id)">&#128465;</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="empty" *ngIf="comments.length === 0 && !loading">
+        <p>Nenhum comentario encontrado.</p>
+      </div>
+    </div>
+
+    <!-- Top Bazes View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'top-bazes'">
+      <div class="section-header">
+        <h2>Top 10 Utilizadores com Mais Bazes</h2>
+      </div>
+
+      <div class="table-container" *ngIf="topBazes.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Bazes</th>
+              <th>Publicacoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of topBazes; trackBy: trackByTopBazesUserId; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ user.nome }}</td>
+              <td>{{ user.bazesCount }}</td>
+              <td>{{ user.publicacoesCount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Create Admin View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'create-admin'">
+      <div class="section-header">
+        <h2>Criar Novo Admin</h2>
+      </div>
+      <div class="form-section">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" [(ngModel)]="newAdmin.nome" placeholder="Nome do admin" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="newAdmin.email" placeholder="Email do admin" />
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <input type="password" [(ngModel)]="newAdmin.senha" placeholder="Senha do admin" />
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="createAdmin()">Criar Admin</button>
+          <button class="btn-cancel" (click)="showView('dashboard')">Cancelar</button>
+        </div>
+        <p class="message" *ngIf="adminMessage">{{ adminMessage }}</p>
+      </div>
+    </div>
+
+    <!-- Account View -->
+    <div class="informacoes-gerais" *ngIf="activeView === 'account'">
+      <div class="section-header">
+        <h2>Alterar Email / Senha</h2>
+      </div>
+      <div class="form-section">
+        <h3>Alterar Email</h3>
+        <div class="form-group">
+          <label>Novo Email</label>
+          <input type="email" [(ngModel)]="newEmail" placeholder="Novo email" />
+        </div>
+        <button class="btn-primary" (click)="changeAdminEmail()">Alterar Email</button>
+
+        <hr />
+
+        <h3>Alterar Senha</h3>
+        <div class="form-group">
+          <label>Senha Atual</label>
+          <input type="password" [(ngModel)]="changePassword.senhaAtual" placeholder="Senha atual" />
+        </div>
+        <div class="form-group">
+          <label>Nova Senha</label>
+          <input type="password" [(ngModel)]="changePassword.novaSenha" placeholder="Nova senha" />
+        </div>
+        <div class="form-group">
+          <label>Confirmar Senha</label>
+          <input type="password" [(ngModel)]="changePassword.confirmarSenha" placeholder="Confirmar senha" />
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="changeAdminPassword()">Alterar Senha</button>
+          <button class="btn-cancel" (click)="showView('dashboard')">Cancelar</button>
+        </div>
+        <p class="message" *ngIf="accountMessage">{{ accountMessage }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>

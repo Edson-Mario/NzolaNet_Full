@@ -1,0 +1,64 @@
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../core/services/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { ApiService } from '../../core/services/api.service';
+import { SignalRService } from '../../core/services/signalr.service';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterModule, FormsModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss'
+})
+export class NavbarComponent implements OnInit, OnDestroy {
+  auth = inject(AuthService);
+  theme = inject(ThemeService);
+  private api = inject(ApiService);
+  private signalr = inject(SignalRService);
+  private subs: Subscription[] = [];
+
+  unreadCount = 0;
+  showNotifDropdown = false;
+  showUserMenu = false;
+  searchQuery = '';
+
+  ngOnInit(): void {
+    if (this.auth.isLoggedIn() && !this.auth.isAdmin()) {
+      this.loadUnreadCount();
+      this.signalr.startConnection();
+
+      this.subs.push(
+        this.signalr.newNotification$.subscribe(({ notification, unreadCount }) => {
+          if (notification.utilizadorId === this.auth.currentUser()?.id) {
+            this.unreadCount = unreadCount;
+          }
+        })
+      );
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
+
+  refreshFeed(): void {
+    this.signalr.refreshFeed$.next();
+  }
+
+  private loadUnreadCount(): void {
+    this.api.getUnreadCount().subscribe(count => this.unreadCount = count);
+  }
+
+  toggleTheme(): void {
+    this.theme.toggle();
+  }
+
+  logout(): void {
+    this.auth.logout();
+  }
+}

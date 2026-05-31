@@ -1,0 +1,78 @@
+{
+  "APP": {
+    "NAME": "NzolaNet"
+  },
+  "NAV": {
+    "HOME": "Home",
+    "FEED": "Feed",
+    "PROFILE": "Profile",
+    "NOTIFICATIONS": "Notifications",
+    "ADMIN": "Administration",
+    "LOGOUT": "Logout",
+    "SEARCH": "Search..."
+  },
+  "AUTH": {
+    "LOGIN": "Login",
+    "REGISTER": "Register",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "NAME": "Name",
+    "BIO": "Biography",
+    "NO_ACCOUNT": "Don't have an account?",
+    "HAS_ACCOUNT": "Already have an account?",
+    "RESET_PASSWORD": "Reset password",
+    "SEND": "Send"
+  },
+  "POST": {
+    "CREATE": "Create post",
+    "WRITE": "What's on your mind?",
+    "PUBLISH": "Publish",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "COMMENTS": "comments",
+    "BAZE": "Baze",
+    "BAZES": "bazes",
+    "SHARE": "Share"
+  },
+  "PROFILE": {
+    "EDIT": "Edit profile",
+    "FOLLOWERS": "Followers",
+    "FOLLOWING": "Following",
+    "FOLLOW": "Follow",
+    "UNFOLLOW": "Unfollow",
+    "POSTS": "Posts",
+    "PRIVACY": "Privacy",
+    "PUBLIC": "Public",
+    "PRIVATE": "Private"
+  },
+  "NOTIFICATION": {
+    "TITLE": "Notifications",
+    "MARK_READ": "Mark as read",
+    "MARK_ALL_READ": "Mark all as read",
+    "EMPTY": "No notifications"
+  },
+  "ADMIN": {
+    "DASHBOARD": "Dashboard",
+    "USERS": "Users",
+    "POSTS": "Posts",
+    "COMMENTS": "Comments",
+    "REPORTS": "Reports",
+    "SETTINGS": "Settings",
+    "TOTAL_USERS": "Total Users",
+    "TOTAL_POSTS": "Total Posts",
+    "TOTAL_COMMENTS": "Total Comments",
+    "TOTAL_BAZES": "Total Bazes",
+    "ACTIVE_USERS": "Active Users"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "CONFIRM": "Confirm",
+    "LOADING": "Loading...",
+    "ERROR": "An error occurred",
+    "SUCCESS": "Operation successful"
+  }
+}

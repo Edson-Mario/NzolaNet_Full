@@ -1,0 +1,96 @@
+<div class="post-card">
+  <div class="post-header">
+    <a [routerLink]="['/profile', post.utilizadorId]" class="author-info">
+      <div class="avatar">
+        <img *ngIf="post.autorFoto" [src]="post.autorFoto" alt="avatar" loading="lazy" />
+        <svg *ngIf="!post.autorFoto" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div>
+        <h4>{{ post.autorNome }}</h4>
+        <span class="time">{{ post.createdAt | timeAgo }}</span>
+      </div>
+    </a>
+    <div class="post-actions" *ngIf="isOwner()">
+      <button (click)="deletePost()">&#128465;&#65039;</button>
+    </div>
+  </div>
+
+  <div class="post-content">
+    <p>{{ post.texto }}</p>
+    <img *ngIf="post.imagem" [src]="post.imagem" alt="post image" class="post-image" loading="lazy" />
+    <video *ngIf="post.video" [src]="post.video" controls class="post-video"></video>
+  </div>
+
+  <div class="post-stats">
+    <span *ngIf="post.bazesCount > 0">{{ post.bazesCount }} bazes</span>
+    <span *ngIf="post.comentariosCount > 0">{{ post.comentariosCount }} comentários</span>
+  </div>
+
+  <div class="post-actions-bar">
+    <button
+      class="action-btn"
+      [class.active]="post.isBazed"
+      (click)="toggleBaze()"
+    >
+      <span>{{ post.isBazed ? '&#128078;' : '&#128077;' }}</span>
+      Baze
+    </button>
+    <button class="action-btn" (click)="toggleComments()">
+      <span>&#128172;</span>
+      Comentários
+    </button>
+  </div>
+
+  <div class="comments-section" *ngIf="showComments">
+    <div class="comment-form">
+      <input
+        type="text"
+        [(ngModel)]="newComment"
+        placeholder="Escrever comentário..."
+        (keyup.enter)="addComment()"
+      />
+      <button (click)="addComment()" [disabled]="commentLoading">&#10148;</button>
+    </div>
+
+    <div class="comments-list">
+      <div class="comment" *ngFor="let c of comments; trackBy: trackByCommentId">
+        <a [routerLink]="['/profile', c.utilizadorId]" class="comment-avatar">
+          <img *ngIf="c.autorFoto" [src]="c.autorFoto" alt="avatar" loading="lazy" />
+          <svg *ngIf="!c.autorFoto" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </a>
+        <div class="comment-body" *ngIf="editingCommentId !== c.id">
+          <a [routerLink]="['/profile', c.utilizadorId]" class="comment-author">{{ c.autorNome }}</a>
+          <p>{{ c.texto }}</p>
+          <span class="comment-time">{{ c.createdAt | timeAgo }}</span>
+        </div>
+        <div class="comment-edit-form" *ngIf="editingCommentId === c.id">
+          <input
+            type="text"
+            [(ngModel)]="editCommentText"
+            (keyup.enter)="saveEditComment(c.id)"
+            (keyup.escape)="cancelEditComment()"
+          />
+          <div class="edit-actions">
+            <button class="btn-save" (click)="saveEditComment(c.id)">&#10003;</button>
+            <button class="btn-cancel" (click)="cancelEditComment()">&#10005;</button>
+          </div>
+        </div>
+        <div class="comment-controls" *ngIf="auth.currentUser()?.id === c.utilizadorId || auth.isAdmin()">
+          <button
+            *ngIf="auth.currentUser()?.id === c.utilizadorId && editingCommentId !== c.id"
+            class="btn-edit-comment"
+            (click)="startEditComment(c)"
+          >&#9998;</button>
+          <button
+            class="btn-delete-comment"
+            (click)="deleteComment(c.id)"
+          >&#128465;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

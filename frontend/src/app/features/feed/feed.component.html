@@ -1,0 +1,33 @@
+<div class="feed-page">
+  <div class="feed-toggle">
+    <button
+      class="toggle-btn"
+      [class.active]="feedType === 'following'"
+      (click)="switchFeed('following')"
+    >Seguindo</button>
+    <button
+      class="toggle-btn"
+      [class.active]="feedType === 'all'"
+      (click)="switchFeed('all')"
+    >Todos</button>
+  </div>
+
+  <app-create-post (postCreated)="onPostCreated($event)"></app-create-post>
+
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>A carregar...</p>
+  </div>
+
+  <div class="posts-list" *ngIf="!loading">
+    <app-post-card
+      *ngFor="let post of posts; trackBy: trackByPostId"
+      [post]="post"
+      (deleted)="onPostDeleted($event)"
+    ></app-post-card>
+
+    <div class="empty" *ngIf="posts.length === 0">
+      <p>Nenhuma publicação ainda. Seja o primeiro a publicar!</p>
+    </div>
+  </div>
+</div>

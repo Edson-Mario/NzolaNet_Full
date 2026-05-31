@@ -1,0 +1,30 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.tmp
+*.vs/
+packages/
+*.nupkg
+.vscode/
+
+# Node / Angular
+node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/*.log
+frontend/.env
+frontend/.env.local
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
