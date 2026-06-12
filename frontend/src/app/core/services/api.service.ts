@@ -130,6 +130,11 @@ export class ApiService {
     return this.http.delete<void>(`${this.BASE_URL}/Notificacao/${id}`);
   }
 
+  // Profile Photo
+  removeProfilePhoto(): Observable<User> {
+    return this.http.delete<User>(`${this.BASE_URL}/Utilizador/profile/photo`);
+  }
+
   // File Upload
   uploadFile(file: File, folder = 'images'): Observable<{ url: string; path: string }> {
     const formData = new FormData();

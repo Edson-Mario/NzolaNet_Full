@@ -19,19 +19,22 @@ namespace NzolaNet.API.Controllers
         private readonly IPublicacaoRepository _pubRepo;
         private readonly INotificacaoRepository _notifRepo;
         private readonly IHubContext<NzolaNetHub> _hub;
+        private readonly IFileService _fileService;
 
         public UtilizadorController(
             IUtilizadorRepository userRepo,
             ISeguidorRepository seguidorRepo,
             IPublicacaoRepository pubRepo,
             INotificacaoRepository notifRepo,
-            IHubContext<NzolaNetHub> hub)
+            IHubContext<NzolaNetHub> hub,
+            IFileService fileService)
         {
             _userRepo = userRepo;
             _seguidorRepo = seguidorRepo;
             _pubRepo = pubRepo;
             _notifRepo = notifRepo;
             _hub = hub;
+            _fileService = fileService;
         }
 
         [HttpGet("{id}")]
@@ -157,6 +160,32 @@ namespace NzolaNet.API.Controllers
         public async Task<ActionResult<UserDto>> GetMe()
         {
             return await GetById(GetCurrentUserId());
+        }
+
+        [HttpDelete("profile/photo")]
+        public async Task<ActionResult<UserDto>> RemoveProfilePhoto()
+        {
+            var userId = GetCurrentUserId();
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null) return NotFound();
+
+            if (user.FotoPerfil != null)
+            {
+                _fileService.Delete(user.FotoPerfil);
+                user.FotoPerfil = null;
+                await _userRepo.UpdateAsync(user);
+            }
+
+            return Ok(new UserDto
+            {
+                Id = user.Id,
+                Nome = user.Nome,
+                Email = user.Email,
+                FotoPerfil = user.FotoPerfil,
+                Privacidade = user.Privacidade,
+                Role = user.Role,
+                IsActive = user.IsActive
+            });
         }
 
         [HttpPut("deactivate")]

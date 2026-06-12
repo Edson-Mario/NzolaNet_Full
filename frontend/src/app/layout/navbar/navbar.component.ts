@@ -1,7 +1,6 @@
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { ApiService } from '../../core/services/api.service';
@@ -11,7 +10,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
@@ -25,7 +24,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   unreadCount = signal(0);
   showNotifDropdown = false;
   showUserMenu = false;
-  searchQuery = '';
 
   ngOnInit(): void {
     if (this.auth.isLoggedIn() && !this.auth.isAdmin()) {

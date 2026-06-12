@@ -43,6 +43,17 @@ export class EditProfileComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
+  removePhoto(): void {
+    this.api.removeProfilePhoto().subscribe({
+      next: (updated) => {
+        this.user.fotoPerfil = undefined;
+        this.previewUrl.set(null);
+        this.selectedFile = null;
+        this.auth.updateCurrentUser(updated);
+      }
+    });
+  }
+
   uploadPhoto(): void {
     if (!this.selectedFile) return;
     this.api.uploadFile(this.selectedFile, 'fotos_de_perfil').subscribe({

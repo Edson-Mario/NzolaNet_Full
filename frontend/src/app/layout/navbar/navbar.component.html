@@ -6,18 +6,6 @@
     </a>
   </div>
 
-  <!-- Normal User: Search + Nav -->
-  <div class="navbar-center" *ngIf="!auth.isAdmin()">
-    <div class="search-box">
-      <span class="search-icon">&#128269;</span>
-      <input
-        type="text"
-        placeholder="Pesquisar..."
-        [(ngModel)]="searchQuery"
-      />
-    </div>
-  </div>
-
   <div class="navbar-right">
     <!-- Normal User links -->
     <ng-container *ngIf="!auth.isAdmin()">

@@ -25,6 +25,13 @@
       >
         Guardar
       </button>
+      <button
+        *ngIf="!previewUrl() && user.fotoPerfil"
+        class="btn-remove-photo"
+        (click)="removePhoto()"
+      >
+        Remover foto
+      </button>
     </div>
   </div>
 
