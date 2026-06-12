@@ -51,14 +51,9 @@ namespace NzolaNet.API.Controllers
                 Nome = user.Nome,
                 Email = user.Email,
                 FotoPerfil = user.FotoPerfil,
-                Bio = user.Bio,
                 Privacidade = user.Privacidade,
                 Role = user.Role,
                 IsActive = user.IsActive,
-                DataNascimento = user.DataNascimento,
-                Endereco = user.Endereco,
-                Nacionalidade = user.Nacionalidade,
-                Sexo = user.Sexo,
                 PublicacoesCount = await _pubRepo.CountByUtilizadorAsync(id),
                 SeguidoresCount = await _seguidorRepo.CountSeguidoresAsync(id),
                 SeguindoCount = await _seguidorRepo.CountSeguindoAsync(id),
@@ -74,13 +69,8 @@ namespace NzolaNet.API.Controllers
             if (user == null) return NotFound();
 
             if (dto.Nome != null) user.Nome = dto.Nome;
-            if (dto.Bio != null) user.Bio = dto.Bio;
             if (dto.FotoPerfil != null) user.FotoPerfil = dto.FotoPerfil;
             if (dto.Privacidade != null) user.Privacidade = dto.Privacidade;
-            if (dto.DataNascimento.HasValue) user.DataNascimento = dto.DataNascimento;
-            if (dto.Endereco != null) user.Endereco = dto.Endereco;
-            if (dto.Nacionalidade != null) user.Nacionalidade = dto.Nacionalidade;
-            if (dto.Sexo != null) user.Sexo = dto.Sexo;
 
             await _userRepo.UpdateAsync(user);
 
@@ -90,14 +80,9 @@ namespace NzolaNet.API.Controllers
                 Nome = user.Nome,
                 Email = user.Email,
                 FotoPerfil = user.FotoPerfil,
-                Bio = user.Bio,
                 Privacidade = user.Privacidade,
                 Role = user.Role,
-                IsActive = user.IsActive,
-                DataNascimento = user.DataNascimento,
-                Endereco = user.Endereco,
-                Nacionalidade = user.Nacionalidade,
-                Sexo = user.Sexo
+                IsActive = user.IsActive
             });
         }
 
@@ -210,7 +195,6 @@ namespace NzolaNet.API.Controllers
                 Id = s.Id,
                 Nome = s.Nome,
                 FotoPerfil = s.FotoPerfil,
-                Bio = s.Bio,
                 IsFollowing = seguindoIds.Contains(s.Id)
             }).ToList();
 
@@ -229,7 +213,6 @@ namespace NzolaNet.API.Controllers
                 Id = s.Id,
                 Nome = s.Nome,
                 FotoPerfil = s.FotoPerfil,
-                Bio = s.Bio,
                 IsFollowing = seguindoIds.Contains(s.Id)
             }).ToList();
 

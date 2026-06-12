@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
@@ -22,56 +22,56 @@ export class DashboardComponent implements OnInit {
   private api = inject(ApiService);
   private auth = inject(AuthService);
 
-  stats: DashboardStats | null = null;
+  stats = signal<DashboardStats | null>(null);
   activeView = 'dashboard';
-  loading = false;
+  loading = signal(false);
 
   // Users
-  users: AdminUser[] = [];
+  users = signal<AdminUser[]>([]);
   userSearch = '';
 
   // Posts
-  posts: PostListItem[] = [];
+  posts = signal<PostListItem[]>([]);
   postFilter = '';
-  expandedPostComments: { [key: number]: Comment[] } = {};
+  expandedPostComments = signal<{ [key: number]: Comment[] }>({});
 
   // Comments
-  comments: CommentListItem[] = [];
+  comments = signal<CommentListItem[]>([]);
   commentFilter = '';
 
   // Top Bazes
-  topBazes: TopBazesUser[] = [];
+  topBazes = signal<TopBazesUser[]>([]);
 
   // Create Admin
   newAdmin: CreateAdminRequest = { nome: '', email: '', senha: '' };
-  adminMessage = '';
+  adminMessage = signal('');
 
   // Change Email/Password
   newEmail = '';
   changePassword: ChangePasswordRequest = { senhaAtual: '', novaSenha: '', confirmarSenha: '' };
-  accountMessage = '';
+  accountMessage = signal('');
 
   ngOnInit(): void {
     this.loadStats();
   }
 
   loadStats(): void {
-    this.api.getDashboardStats().subscribe(stats => this.stats = stats);
+    this.api.getDashboardStats().subscribe(stats => this.stats.set(stats));
   }
 
   showView(view: string): void {
     this.activeView = view;
-    this.loading = true;
+    this.loading.set(true);
 
     switch (view) {
       case 'users':
         this.loadUsers();
         break;
       case 'active-users':
-        this.api.getActiveUsers().subscribe(u => { this.users = u; this.loading = false; });
+        this.api.getActiveUsers().subscribe(u => { this.users.set(u); this.loading.set(false); });
         break;
       case 'inactive-users':
-        this.api.getInactiveUsers().subscribe(u => { this.users = u; this.loading = false; });
+        this.api.getInactiveUsers().subscribe(u => { this.users.set(u); this.loading.set(false); });
         break;
       case 'posts':
         this.loadPosts();
@@ -80,18 +80,18 @@ export class DashboardComponent implements OnInit {
         this.loadComments();
         break;
       case 'top-bazes':
-        this.api.getTopBazes().subscribe(u => { this.topBazes = u; this.loading = false; });
+        this.api.getTopBazes().subscribe(u => { this.topBazes.set(u); this.loading.set(false); });
         break;
       default:
-        this.loading = false;
+        this.loading.set(false);
     }
   }
 
   // Users
   loadUsers(): void {
     this.api.getAdminUsers(this.userSearch || undefined).subscribe(u => {
-      this.users = u;
-      this.loading = false;
+      this.users.set(u);
+      this.loading.set(false);
     });
   }
 
@@ -101,22 +101,24 @@ export class DashboardComponent implements OnInit {
 
   deactivateUser(id: number): void {
     this.api.deactivateUser(id).subscribe(() => {
-      const u = this.users.find(x => x.id === id);
-      if (u) u.isActive = false;
+      this.users.update(arr =>
+        arr.map(u => u.id === id ? { ...u, isActive: false } : u)
+      );
     });
   }
 
   activateUser(id: number): void {
     this.api.activateUser(id).subscribe(() => {
-      const u = this.users.find(x => x.id === id);
-      if (u) u.isActive = true;
+      this.users.update(arr =>
+        arr.map(u => u.id === id ? { ...u, isActive: true } : u)
+      );
     });
   }
 
   deleteUser(id: number): void {
     if (confirm('Tem certeza que deseja eliminar este utilizador?')) {
       this.api.deleteAdminUser(id).subscribe(() => {
-        this.users = this.users.filter(u => u.id !== id);
+        this.users.update(arr => arr.filter(u => u.id !== id));
         this.loadStats();
       });
     }
@@ -134,8 +136,8 @@ export class DashboardComponent implements OnInit {
   // Posts
   loadPosts(): void {
     this.api.getAdminPosts(this.postFilter || undefined).subscribe(p => {
-      this.posts = p;
-      this.loading = false;
+      this.posts.set(p);
+      this.loading.set(false);
     });
   }
 
@@ -145,11 +147,15 @@ export class DashboardComponent implements OnInit {
   }
 
   toggleComments(postId: number): void {
-    if (this.expandedPostComments[postId]) {
-      delete this.expandedPostComments[postId];
+    const current = this.expandedPostComments();
+    if (current[postId]) {
+      this.expandedPostComments.update(map => {
+        const { [postId]: _, ...rest } = map;
+        return rest;
+      });
     } else {
       this.api.getPostComments(postId).subscribe(c => {
-        this.expandedPostComments[postId] = c;
+        this.expandedPostComments.update(map => ({ ...map, [postId]: c }));
       });
     }
   }
@@ -157,7 +163,7 @@ export class DashboardComponent implements OnInit {
   deletePost(id: number): void {
     if (confirm('Tem certeza que deseja eliminar esta publicacao?')) {
       this.api.deleteAdminPost(id).subscribe(() => {
-        this.posts = this.posts.filter(p => p.id !== id);
+        this.posts.update(arr => arr.filter(p => p.id !== id));
         this.loadStats();
       });
     }
@@ -166,8 +172,8 @@ export class DashboardComponent implements OnInit {
   // Comments
   loadComments(): void {
     this.api.getAdminComments(this.commentFilter || undefined).subscribe(c => {
-      this.comments = c;
-      this.loading = false;
+      this.comments.set(c);
+      this.loading.set(false);
     });
   }
 
@@ -179,7 +185,7 @@ export class DashboardComponent implements OnInit {
   deleteComment(id: number): void {
     if (confirm('Tem certeza que deseja eliminar este comentario?')) {
       this.api.deleteAdminComment(id).subscribe(() => {
-        this.comments = this.comments.filter(c => c.id !== id);
+        this.comments.update(arr => arr.filter(c => c.id !== id));
         this.loadStats();
       });
     }
@@ -189,10 +195,10 @@ export class DashboardComponent implements OnInit {
   createAdmin(): void {
     this.api.createAdmin(this.newAdmin).subscribe({
       next: () => {
-        this.adminMessage = 'Admin criado com sucesso!';
+        this.adminMessage.set('Admin criado com sucesso!');
         this.newAdmin = { nome: '', email: '', senha: '' };
       },
-      error: (err) => this.adminMessage = err.error?.message || 'Erro ao criar admin.'
+      error: (err) => this.adminMessage.set(err.error?.message || 'Erro ao criar admin.')
     });
   }
 
@@ -200,10 +206,10 @@ export class DashboardComponent implements OnInit {
   changeAdminEmail(): void {
     this.api.changeEmail({ novoEmail: this.newEmail }).subscribe({
       next: () => {
-        this.accountMessage = 'Email alterado com sucesso!';
+        this.accountMessage.set('Email alterado com sucesso!');
         this.newEmail = '';
       },
-      error: (err) => this.accountMessage = err.error?.message || 'Erro ao alterar email.'
+      error: (err) => this.accountMessage.set(err.error?.message || 'Erro ao alterar email.')
     });
   }
 
@@ -211,10 +217,10 @@ export class DashboardComponent implements OnInit {
   changeAdminPassword(): void {
     this.api.changePassword(this.changePassword).subscribe({
       next: () => {
-        this.accountMessage = 'Senha alterada com sucesso!';
+        this.accountMessage.set('Senha alterada com sucesso!');
         this.changePassword = { senhaAtual: '', novaSenha: '', confirmarSenha: '' };
       },
-      error: (err) => this.accountMessage = err.error?.message || 'Erro ao alterar senha.'
+      error: (err) => this.accountMessage.set(err.error?.message || 'Erro ao alterar senha.')
     });
   }
 

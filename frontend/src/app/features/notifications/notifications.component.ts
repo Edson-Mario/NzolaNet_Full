@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { SignalRService } from '../../core/services/signalr.service';
@@ -20,8 +20,8 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private auth = inject(AuthService);
   private subs: Subscription[] = [];
 
-  notifications: Notification[] = [];
-  loading = true;
+  notifications = signal<Notification[]>([]);
+  loading = signal(true);
 
   ngOnInit(): void {
     this.loadNotifications();
@@ -30,7 +30,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     this.subs.push(
       this.signalr.newNotification$.subscribe(({ notification }) => {
         if (notification.utilizadorId === this.auth.currentUser()?.id) {
-          this.notifications.unshift(notification);
+          this.notifications.update(n => [notification, ...n]);
         }
       })
     );
@@ -43,31 +43,32 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private loadNotifications(): void {
     this.api.getNotifications().subscribe({
       next: (notifs) => {
-        this.notifications = notifs;
-        this.loading = false;
+        this.notifications.set(notifs);
+        this.loading.set(false);
       },
-      error: () => this.loading = false
+      error: () => this.loading.set(false)
     });
   }
 
   markAsRead(id: number): void {
     this.api.markAsRead(id).subscribe(() => {
-      const notif = this.notifications.find(n => n.id === id);
-      if (notif) notif.lida = true;
+      this.notifications.update(n =>
+        n.map(x => x.id === id ? { ...x, lida: true } : x)
+      );
     });
   }
 
   deleteNotification(id: number): void {
     this.api.deleteNotification(id).subscribe({
       next: () => {
-        this.notifications = this.notifications.filter(n => n.id !== id);
+        this.notifications.update(n => n.filter(x => x.id !== id));
       }
     });
   }
 
   markAllAsRead(): void {
     this.api.markAllAsRead().subscribe(() => {
-      this.notifications.forEach(n => n.lida = true);
+      this.notifications.update(n => n.map(x => ({ ...x, lida: true })));
     });
   }
 

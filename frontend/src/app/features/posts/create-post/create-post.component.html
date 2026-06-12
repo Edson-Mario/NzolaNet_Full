@@ -20,8 +20,8 @@
       <button class="option-btn">&#128247; Foto</button>
       <button class="option-btn">&#127909; Vídeo</button>
     </div>
-    <button class="btn-publish" (click)="submit()" [disabled]="loading || !texto.trim()">
-      {{ loading ? '...' : 'Publicar' }}
+    <button class="btn-publish" (click)="submit()" [disabled]="loading() || !texto.trim()">
+      {{ loading() ? '...' : 'Publicar' }}
     </button>
   </div>
 </div>

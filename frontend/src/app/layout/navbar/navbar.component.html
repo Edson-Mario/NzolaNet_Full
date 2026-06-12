@@ -27,7 +27,7 @@
 
       <a routerLink="/notifications" class="nav-icon notification-icon" [routerLinkActive]="'active'">
         <span>&#128276;</span>
-        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        <span class="badge" *ngIf="unreadCount() > 0">{{ unreadCount() }}</span>
       </a>
     </ng-container>
 

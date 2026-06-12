@@ -1,0 +1,140 @@
+============================================
+  DIAGRAMA DE RELACIONAMENTO - NZOLANET API
+  Tecnologia: MySQL + Entity Framework Core 8
+============================================
+
+  ┌──────────────────────────────┐
+  │         Utilizador           │
+  ├──────────────────────────────┤
+  │ Id                (PK)  int  │
+  │ Nome                    str  │
+  │ Email            (UK)   str  │
+  │ Senha                    str  │
+  │ FotoPerfil               str?│
+  │ Bio                      str?│
+  │ Privacidade    "publico/.."  │
+  │ Role           "user/admin"  │
+  │ IsActive               bool  │
+  │ DataNascimento        date?  │
+  │ Endereco                str? │
+  │ Nacionalidade           str? │
+  │ Sexo                    str? │
+  │ CreatedAt             datetime│
+  └──────────┬───────────────────┘
+             │
+   ┌─────────┼─────────┬──────────────┬──────────────────┐
+   │1:N      │1:N      │1:N           │1:N               │1:N
+   │CASCADE  │RESTRICT │RESTRICT      │CASCADE           │RESTRICT
+   ▼         ▼         ▼              ▼                  ▼
+┌────────┐ ┌────────┐ ┌──────┐  ┌──────────────┐  ┌──────────┐
+│Publica-│ │Comenta-│ │Baze  │  │ Notificacao  │  │ Seguidor │
+│cao     │ │rio     │ │      │  │              │  │          │
+├────────┤ ├────────┤ ├──────┤  ├──────────────┤  ├──────────┤
+│Id   PK │ │Id   PK │ │Id PK │  │Id         PK │  │Id     PK │
+│Utiliza-│ │Publica-│ │Publi-│  │UtilizadorId  │  │SeguidorId│
+│dorId FK│ │caoId FK│ │cacao │  │FK (CASCADE)  │  │FK(RESTR) │
+│Texto   │ │Utiliza-│ │Id FK │  │Tipo          │  │SeguidoId │
+│Imagem  │ │dorId FK│ │Utili-│  │Mensagem      │  │FK(RESTR) │
+│Video   │ │(RESTR) │ │zador │  │Lida          │  │CreatedAt │
+│Created │ │Texto   │ │Id FK │  │CreatedAt     │  │          │
+│Updated │ │Created │ │(RESTR)│  │              │  │          │
+│        │ │        │ │Crea- │  │              │  │          │
+│CASCADE │ │        │ │tedAt │  │              │  │          │
+│   ▼    │ │        │ │      │  │              │  │          │
+│   │    │ │        │ │      │  │              │  │          │
+│   │1:N │ │        │ │      │  │              │  │          │
+│   │CAS.│ │        │ │1:N   │  │              │  │          │
+│   ▼    │ │        │ │CAS.  │  │              │  │          │
+│ ┌───┐  │ │        │ │      │  │              │  │          │
+│ │Com│  │ │        │ │      │  │              │  │          │
+│ │en-│  │ │        │ │      │  │              │  │          │
+│ │ta-│  │ │        │ │      │  │              │  │          │
+│ │rio│  │ │        │ │      │  │              │  │          │
+│ └───┘  │ │        │ │      │  │              │  │          │
+│        │ │        │ │      │  │              │  │          │
+│ ┌───┐  │ │        │ │      │  │              │  │          │
+│ │Baz│  │ │        │ │      │  │              │  │          │
+│ │e  │  │ │        │ │      │  │              │  │          │
+│ └───┘  │ │        │ │      │  │              │  │          │
+└────────┘ └────────┘ └──────┘  └──────────────┘  └──────────┘
+
+
+============================================
+         DETALHES DAS TABELAS
+============================================
+
+1. Utilizadores (Usuários)
+────────────────────────────
+   PK: Id
+   UK: Email
+   Colunas: Nome, Email, Senha, FotoPerfil, Bio,
+            Privacidade (publico/privado),
+            Role (user/admin), IsActive,
+            DataNascimento, Endereco, Nacionalidade,
+            Sexo, CreatedAt
+   Relacionamentos:
+     ├── 1:N → Publicacoes  (CASCADE)
+     ├── 1:N → Comentarios  (RESTRICT)
+     ├── 1:N → Bazes        (RESTRICT)
+     ├── 1:N → Notificacoes (CASCADE)
+     └── 1:N → Seguidores   (RESTRICT) como SeguidorId
+     └── 1:N → Seguidores   (RESTRICT) como SeguidoId
+
+2. Publicacoes (Posts)
+────────────────────────────
+   PK: Id
+   FK: UtilizadorId → Utilizadores.Id (CASCADE)
+   Colunas: Texto, Imagem, Video, CreatedAt, UpdatedAt
+   Relacionamentos:
+     ├── 1:N → Comentarios (CASCADE)
+     └── 1:N → Bazes       (CASCADE)
+
+3. Comentarios (Comentários)
+────────────────────────────
+   PK: Id
+   FK: PublicacaoId → Publicacoes.Id (CASCADE)
+   FK: UtilizadorId → Utilizadores.Id (RESTRICT)
+   Colunas: Texto, CreatedAt
+
+4. Bazes (Curtidas / Likes)
+────────────────────────────
+   PK: Id
+   FK: PublicacaoId → Publicacoes.Id (CASCADE)
+   FK: UtilizadorId → Utilizadores.Id (RESTRICT)
+   UK: (PublicacaoId, UtilizadorId) → 1 like por user/post
+   Colunas: CreatedAt
+
+5. Seguidores (Follows)
+────────────────────────────
+   PK: Id
+   FK: SeguidorId → Utilizadores.Id (RESTRICT)
+   FK: SeguidoId  → Utilizadores.Id (RESTRICT)
+   UK: (SeguidorId, SeguidoId) → follow único
+   Colunas: CreatedAt
+   * Auto-relacionamento da tabela Utilizadores
+
+6. Notificacoes (Notificações)
+────────────────────────────
+   PK: Id
+   FK: UtilizadorId → Utilizadores.Id (CASCADE)
+   Colunas: Tipo (baze/comentario/seguidor),
+            Mensagem, Lida, CreatedAt
+
+
+============================================
+     RESUMO DOS RELACIONAMENTOS
+============================================
+
+Utilizador (1) ────< (N) Publicacao       [CASCADE]
+Utilizador (1) ────< (N) Comentario       [RESTRICT]
+Utilizador (1) ────< (N) Baze             [RESTRICT]
+Utilizador (1) ────< (N) Notificacao      [CASCADE]
+Utilizador (1) ────< (N) Seguidor         [RESTRICT] (SeguidorId)
+Utilizador (1) ────< (N) Seguidor         [RESTRICT] (SeguidoId)
+Publicacao  (1) ────< (N) Comentario      [CASCADE]
+Publicacao  (1) ────< (N) Baze            [CASCADE]
+
+Índices Únicos:
+  - Utilizadores.Email
+  - Bazes(PublicacaoId, UtilizadorId)
+  - Seguidores(SeguidorId, SeguidoId)

@@ -3,14 +3,9 @@ export interface User {
   nome: string;
   email: string;
   fotoPerfil?: string;
-  bio?: string;
   privacidade: string;
   role: string;
   isActive?: boolean;
-  dataNascimento?: string;
-  endereco?: string;
-  nacionalidade?: string;
-  sexo?: string;
   publicacoesCount?: number;
   seguidoresCount?: number;
   seguindoCount?: number;
@@ -37,20 +32,10 @@ export interface RegisterRequest {
   senha: string;
   confirmarSenha: string;
   fotoPerfil?: string;
-  bio?: string;
-  dataNascimento?: string;
-  endereco?: string;
-  nacionalidade?: string;
-  sexo?: string;
 }
 
 export interface UpdateProfileRequest {
   nome?: string;
-  bio?: string;
   fotoPerfil?: string;
   privacidade?: string;
-  dataNascimento?: string;
-  endereco?: string;
-  nacionalidade?: string;
-  sexo?: string;
 }

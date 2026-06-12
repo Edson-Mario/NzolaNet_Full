@@ -4,12 +4,12 @@
   <!-- Photo Upload Section -->
   <div class="photo-upload-section">
     <div class="photo-preview">
-      <img
-        *ngIf="previewUrl || user.fotoPerfil"
-        [src]="previewUrl || user.fotoPerfil"
-        alt="avatar"
-      />
-      <svg *ngIf="!previewUrl && !user.fotoPerfil" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
+        <img
+          *ngIf="previewUrl() || user.fotoPerfil"
+          [src]="previewUrl() || user.fotoPerfil"
+          alt="avatar"
+        />
+        <svg *ngIf="!previewUrl() && !user.fotoPerfil" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
       </svg>
     </div>
@@ -34,35 +34,6 @@
   </div>
 
   <div class="form-group">
-    <label>Biografia</label>
-    <textarea [(ngModel)]="bio" rows="3" placeholder="Sobre voce..."></textarea>
-  </div>
-
-  <div class="form-group">
-    <label>Data de nascimento</label>
-    <input type="date" [(ngModel)]="dataNascimento" />
-  </div>
-
-  <div class="form-group">
-    <label>Endereço</label>
-    <input type="text" [(ngModel)]="endereco" placeholder="Seu endereco" />
-  </div>
-
-  <div class="form-group">
-    <label>Nacionalidade</label>
-    <input type="text" [(ngModel)]="nacionalidade" placeholder="Sua nacionalidade" />
-  </div>
-
-  <div class="form-group">
-    <label>Sexo</label>
-    <select [(ngModel)]="sexo">
-      <option value="">--</option>
-      <option value="Masculino">Masculino</option>
-      <option value="Feminino">Feminino</option>
-    </select>
-  </div>
-
-  <div class="form-group">
     <label>Privacidade</label>
     <select [(ngModel)]="privacidade">
       <option value="publico">Público</option>
@@ -72,8 +43,8 @@
 
   <div class="form-actions">
     <button class="btn-cancel" (click)="cancel()">Cancelar</button>
-    <button class="btn-save" (click)="save()" [disabled]="saving || !nome.trim()">
-      {{ saving ? 'A carregar...' : 'Guardar' }}
+    <button class="btn-save" (click)="save()" [disabled]="saving() || !nome.trim()">
+      {{ saving() ? 'A carregar...' : 'Guardar' }}
     </button>
   </div>
 </div>

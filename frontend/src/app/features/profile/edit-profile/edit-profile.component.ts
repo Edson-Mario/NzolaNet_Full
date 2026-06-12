@@ -1,4 +1,4 @@
-import { Component, inject, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
@@ -21,25 +21,15 @@ export class EditProfileComponent implements OnInit {
   private auth = inject(AuthService);
 
   nome = '';
-  bio = '';
   privacidade = 'publico';
-  dataNascimento = '';
-  endereco = '';
-  nacionalidade = '';
-  sexo = '';
-  saving = false;
+  saving = signal(false);
 
   selectedFile: File | null = null;
-  previewUrl: string | null = null;
+  previewUrl = signal<string | null>(null);
 
   ngOnInit(): void {
     this.nome = this.user.nome;
-    this.bio = this.user.bio || '';
     this.privacidade = this.user.privacidade;
-    this.dataNascimento = this.user.dataNascimento || '';
-    this.endereco = this.user.endereco || '';
-    this.nacionalidade = this.user.nacionalidade || '';
-    this.sexo = this.user.sexo || '';
   }
 
   onFileSelect(event: any): void {
@@ -48,7 +38,7 @@ export class EditProfileComponent implements OnInit {
     this.selectedFile = file;
     const reader = new FileReader();
     reader.onload = () => {
-      this.previewUrl = reader.result as string;
+      this.previewUrl.set(reader.result as string);
     };
     reader.readAsDataURL(file);
   }
@@ -70,25 +60,20 @@ export class EditProfileComponent implements OnInit {
 
   save(): void {
     if (!this.nome.trim()) return;
-    this.saving = true;
+    this.saving.set(true);
 
     const dto: UpdateProfileRequest = {
       nome: this.nome.trim(),
-      bio: this.bio.trim(),
-      privacidade: this.privacidade,
-      dataNascimento: this.dataNascimento || undefined,
-      endereco: this.endereco.trim() || undefined,
-      nacionalidade: this.nacionalidade.trim() || undefined,
-      sexo: this.sexo || undefined
+      privacidade: this.privacidade
     };
 
     this.api.updateProfile(dto).subscribe({
       next: (updated) => {
         this.auth.updateCurrentUser(updated);
         this.saved.emit(updated);
-        this.saving = false;
+        this.saving.set(false);
       },
-      error: () => this.saving = false
+      error: () => this.saving.set(false)
     });
   }
 

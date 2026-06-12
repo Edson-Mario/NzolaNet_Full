@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,10 +22,10 @@ export class PostCardComponent {
   private api = inject(ApiService);
   auth = inject(AuthService);
 
-  showComments = false;
-  comments: Comment[] = [];
+  showComments = signal(false);
+  comments = signal<Comment[]>([]);
   newComment = '';
-  commentLoading = false;
+  commentLoading = signal(false);
   editingCommentId: number | null = null;
   editCommentText = '';
 
@@ -37,27 +37,27 @@ export class PostCardComponent {
   }
 
   toggleComments(): void {
-    this.showComments = !this.showComments;
-    if (this.showComments && this.comments.length === 0) {
-      this.api.getComments(this.post.id).subscribe(c => this.comments = c);
+    this.showComments.update(v => !v);
+    if (this.showComments() && this.comments().length === 0) {
+      this.api.getComments(this.post.id).subscribe(c => this.comments.set(c));
     }
   }
 
   addComment(): void {
     if (!this.newComment.trim()) return;
-    this.commentLoading = true;
+    this.commentLoading.set(true);
 
     this.api.createComment({
       publicacaoId: this.post.id,
       texto: this.newComment
     }).subscribe({
       next: (comment) => {
-        this.comments.unshift(comment);
+        this.comments.update(c => [comment, ...c]);
         this.post.comentariosCount++;
         this.newComment = '';
-        this.commentLoading = false;
+        this.commentLoading.set(false);
       },
-      error: () => this.commentLoading = false
+      error: () => this.commentLoading.set(false)
     });
   }
 
@@ -72,7 +72,7 @@ export class PostCardComponent {
   deleteComment(id: number): void {
     if (confirm('Tem certeza que deseja eliminar este comentario?')) {
       this.api.deleteComment(id).subscribe(() => {
-        this.comments = this.comments.filter(c => c.id !== id);
+        this.comments.update(c => c.filter(x => x.id !== id));
         this.post.comentariosCount--;
       });
     }
@@ -92,10 +92,9 @@ export class PostCardComponent {
     if (!this.editCommentText.trim()) return;
     this.api.updateComment(commentId, this.editCommentText).subscribe({
       next: (updated) => {
-        const idx = this.comments.findIndex(c => c.id === commentId);
-        if (idx !== -1) {
-          this.comments[idx].texto = updated.texto;
-        }
+        this.comments.update(c =>
+          c.map(x => x.id === commentId ? { ...x, texto: updated.texto } : x)
+        );
         this.editingCommentId = null;
         this.editCommentText = '';
       }

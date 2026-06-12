@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -21,14 +21,14 @@ export class ProfilePageComponent implements OnInit {
   private api = inject(ApiService);
   auth = inject(AuthService);
 
-  user: User | null = null;
-  posts: Post[] = [];
-  loading = true;
+  user = signal<User | null>(null);
+  posts = signal<Post[]>([]);
+  loading = signal(true);
   isOwnProfile = false;
   showEditModal = false;
 
-  seguidores: User[] = [];
-  seguindo: User[] = [];
+  seguidores = signal<User[]>([]);
+  seguindo = signal<User[]>([]);
   showFollowersList = false;
   showFollowingList = false;
 
@@ -36,55 +36,57 @@ export class ProfilePageComponent implements OnInit {
     this.route.params.subscribe(params => {
       const userId = +params['id'];
       this.isOwnProfile = userId === this.auth.currentUser()?.id;
+      this.loading.set(true);
       forkJoin({
         user: this.api.getUser(userId),
         posts: this.api.getUserPosts(userId)
       }).subscribe({
         next: ({ user, posts }) => {
-          this.user = user;
-          this.posts = posts;
-          this.loading = false;
+          this.user.set(user);
+          this.posts.set(posts);
+          this.loading.set(false);
         },
-        error: () => this.loading = false
+        error: () => this.loading.set(false)
       });
     });
   }
 
   toggleFollow(): void {
-    if (!this.user) return;
+    const u = this.user();
+    if (!u) return;
 
-    if (this.user.isFollowing) {
-      this.api.unfollowUser(this.user.id).subscribe(() => {
-        if (this.user) {
-          this.user.isFollowing = false;
-          this.user.seguidoresCount!--;
-        }
+    if (u.isFollowing) {
+      this.api.unfollowUser(u.id).subscribe(() => {
+        this.user.update(x =>
+          x ? { ...x, isFollowing: false, seguidoresCount: x.seguidoresCount! - 1 } : x
+        );
       });
     } else {
-      this.api.followUser(this.user.id).subscribe(() => {
-        if (this.user) {
-          this.user.isFollowing = true;
-          this.user.seguidoresCount!++;
-        }
+      this.api.followUser(u.id).subscribe(() => {
+        this.user.update(x =>
+          x ? { ...x, isFollowing: true, seguidoresCount: x.seguidoresCount! + 1 } : x
+        );
       });
     }
   }
 
   loadSeguidores(): void {
-    if (!this.user) return;
-    this.api.getSeguidores(this.user.id).subscribe({
+    const u = this.user();
+    if (!u) return;
+    this.api.getSeguidores(u.id).subscribe({
       next: (list) => {
-        this.seguidores = list;
+        this.seguidores.set(list);
         this.showFollowersList = true;
       }
     });
   }
 
   loadSeguindo(): void {
-    if (!this.user) return;
-    this.api.getSeguindo(this.user.id).subscribe({
+    const u = this.user();
+    if (!u) return;
+    this.api.getSeguindo(u.id).subscribe({
       next: (list) => {
-        this.seguindo = list;
+        this.seguindo.set(list);
         this.showFollowingList = true;
       }
     });
@@ -117,12 +119,11 @@ export class ProfilePageComponent implements OnInit {
   }
 
   activateAccount(): void {
-    if (!this.user) return;
+    const u = this.user();
+    if (!u) return;
     this.api.activateAccount().subscribe({
       next: () => {
-        if (this.user) {
-          this.user.isActive = true;
-        }
+        this.user.update(x => x ? { ...x, isActive: true } : x);
       }
     });
   }
@@ -144,11 +145,11 @@ export class ProfilePageComponent implements OnInit {
   }
 
   onProfileUpdated(updated: User): void {
-    this.user = { ...this.user, ...updated } as User;
+    this.user.update(u => ({ ...u, ...updated }) as User);
     this.showEditModal = false;
   }
 
   onPostDeleted(id: number): void {
-    this.posts = this.posts.filter(p => p.id !== id);
+    this.posts.update(p => p.filter(x => x.id !== id));
   }
 }

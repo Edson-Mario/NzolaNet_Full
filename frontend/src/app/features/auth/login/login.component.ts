@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -17,20 +17,20 @@ export class LoginComponent {
 
   email = '';
   senha = '';
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   onSubmit(): void {
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
 
     this.auth.login({ email: this.email, senha: this.senha }).subscribe({
       next: () => {
         this.router.navigate(['/']);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Erro ao entrar';
-        this.loading = false;
+        this.error.set(err.error?.message || 'Erro ao entrar');
+        this.loading.set(false);
       }
     });
   }

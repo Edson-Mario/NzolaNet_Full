@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private signalr = inject(SignalRService);
   private subs: Subscription[] = [];
 
-  unreadCount = 0;
+  unreadCount = signal(0);
   showNotifDropdown = false;
   showUserMenu = false;
   searchQuery = '';
@@ -35,7 +35,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.subs.push(
         this.signalr.newNotification$.subscribe(({ notification, unreadCount }) => {
           if (notification.utilizadorId === this.auth.currentUser()?.id) {
-            this.unreadCount = unreadCount;
+            this.unreadCount.set(unreadCount);
           }
         })
       );
@@ -51,7 +51,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   private loadUnreadCount(): void {
-    this.api.getUnreadCount().subscribe(count => this.unreadCount = count);
+    this.api.getUnreadCount().subscribe(count => this.unreadCount.set(count));
   }
 
   toggleTheme(): void {

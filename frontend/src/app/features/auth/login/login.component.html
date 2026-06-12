@@ -16,10 +16,10 @@
         <input type="password" [(ngModel)]="senha" name="senha" required placeholder="********" />
       </div>
 
-      <div class="error" *ngIf="error">{{ error }}</div>
+      <div class="error" *ngIf="error()">{{ error() }}</div>
 
-      <button type="submit" class="btn-primary" [disabled]="loading">
-        {{ loading ? '...' : 'Entrar' }}
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? '...' : 'Entrar' }}
       </button>
     </form>
 

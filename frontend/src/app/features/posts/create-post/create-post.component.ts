@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Output, EventEmitter, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
@@ -19,21 +19,21 @@ export class CreatePostComponent {
   auth = inject(AuthService);
 
   texto = '';
-  loading = false;
+  loading = signal(false);
   expanded = false;
 
   submit(): void {
     if (!this.texto.trim()) return;
-    this.loading = true;
+    this.loading.set(true);
 
     this.api.createPost({ texto: this.texto }).subscribe({
       next: (post) => {
         this.postCreated.emit(post);
         this.texto = '';
         this.expanded = false;
-        this.loading = false;
+        this.loading.set(false);
       },
-      error: () => this.loading = false
+      error: () => this.loading.set(false)
     });
   }
 }

@@ -22,8 +22,6 @@ namespace NzolaNet.API.Models
         [MaxLength(500)]
         public string? FotoPerfil { get; set; }
 
-        public string? Bio { get; set; }
-
         [MaxLength(20)]
         public string Privacidade { get; set; } = "publico";
 
@@ -31,17 +29,6 @@ namespace NzolaNet.API.Models
         public string Role { get; set; } = "user";
 
         public bool IsActive { get; set; } = true;
-
-        public DateTime? DataNascimento { get; set; }
-
-        [MaxLength(200)]
-        public string? Endereco { get; set; }
-
-        [MaxLength(50)]
-        public string? Nacionalidade { get; set; }
-
-        [MaxLength(20)]
-        public string? Sexo { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

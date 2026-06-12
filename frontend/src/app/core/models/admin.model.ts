@@ -13,10 +13,6 @@ export interface AdminUser {
   email: string;
   role: string;
   isActive: boolean;
-  dataNascimento?: string;
-  endereco?: string;
-  nacionalidade?: string;
-  sexo?: string;
   createdAt: string;
   publicacoesCount: number;
   bazesCount: number;

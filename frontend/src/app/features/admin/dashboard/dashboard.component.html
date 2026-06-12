@@ -5,46 +5,46 @@
   </div>
 
   <!-- Dashboard Stats Cards -->
-  <div class="stats-grid" *ngIf="stats">
+  <div class="stats-grid" *ngIf="stats()">
     <div class="stat-card users" (click)="showView('users')">
       <div class="stat-icon">&#128100;</div>
       <div class="stat-info">
-        <h3>{{ stats.totalUtilizadores }}</h3>
+        <h3>{{ stats()!.totalUtilizadores }}</h3>
         <p>Total Utilizadores</p>
       </div>
     </div>
     <div class="stat-card active" (click)="showView('active-users')">
       <div class="stat-icon">&#9889;</div>
       <div class="stat-info">
-        <h3>{{ stats.utilizadoresAtivos }}</h3>
+        <h3>{{ stats()!.utilizadoresAtivos }}</h3>
         <p>Utilizadores Ativos</p>
       </div>
     </div>
     <div class="stat-card posts" (click)="showView('posts')">
       <div class="stat-icon">&#128221;</div>
       <div class="stat-info">
-        <h3>{{ stats.totalPublicacoes }}</h3>
+        <h3>{{ stats()!.totalPublicacoes }}</h3>
         <p>Total Publicações</p>
       </div>
     </div>
     <div class="stat-card comments" (click)="showView('comments')">
       <div class="stat-icon">&#128172;</div>
       <div class="stat-info">
-        <h3>{{ stats.totalComentarios }}</h3>
+        <h3>{{ stats()!.totalComentarios }}</h3>
         <p>Total Comentários</p>
       </div>
     </div>
     <div class="stat-card bazes" (click)="showView('top-bazes')">
       <div class="stat-icon">&#128077;</div>
       <div class="stat-info">
-        <h3>{{ stats.totalBazes }}</h3>
+        <h3>{{ stats()!.totalBazes }}</h3>
         <p>Total Bazes</p>
       </div>
     </div>
     <div class="stat-card inactive" (click)="showView('inactive-users')">
       <div class="stat-icon">&#128683;</div>
       <div class="stat-info">
-        <h3>{{ stats.utilizadoresDesativados }}</h3>
+        <h3>{{ stats()!.utilizadoresDesativados }}</h3>
         <p>Desativados</p>
       </div>
     </div>
@@ -87,7 +87,7 @@
         </div>
       </div>
 
-      <div class="table-container" *ngIf="users.length > 0">
+        <div class="table-container" *ngIf="users().length > 0">
         <table>
           <thead>
             <tr>
@@ -96,10 +96,6 @@
               <th>Email</th>
               <th>Role</th>
               <th>Estado</th>
-              <th>Data Nasc.</th>
-              <th>Endereco</th>
-              <th>Nacionalidade</th>
-              <th>Sexo</th>
               <th>Posts</th>
               <th>Bazes</th>
               <th>Data</th>
@@ -107,7 +103,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users; trackBy: trackByAdminUserId">
+            <tr *ngFor="let user of users(); trackBy: trackByAdminUserId">
               <td>{{ user.id }}</td>
               <td>{{ user.nome }}</td>
               <td>{{ user.email }}</td>
@@ -117,10 +113,6 @@
                   {{ user.isActive ? 'Ativo' : 'Desativado' }}
                 </span>
               </td>
-              <td>{{ user.dataNascimento ? (user.dataNascimento | date:'shortDate') : '-' }}</td>
-              <td>{{ user.endereco || '-' }}</td>
-              <td>{{ user.nacionalidade || '-' }}</td>
-              <td>{{ user.sexo || '-' }}</td>
               <td>{{ user.publicacoesCount }}</td>
               <td>{{ user.bazesCount }}</td>
               <td>{{ user.createdAt | date:'short' }}</td>
@@ -148,7 +140,7 @@
           </tbody>
         </table>
       </div>
-      <div class="empty" *ngIf="users.length === 0 && !loading">
+      <div class="empty" *ngIf="users().length === 0 && !loading()">
         <p>Nenhum utilizador encontrado.</p>
       </div>
     </div>
@@ -167,7 +159,7 @@
         </div>
       </div>
 
-      <div class="table-container" *ngIf="posts.length > 0">
+      <div class="table-container" *ngIf="posts().length > 0">
         <table>
           <thead>
             <tr>
@@ -181,7 +173,7 @@
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let post of posts; trackBy: trackByPostListItemId">
+            <ng-container *ngFor="let post of posts(); trackBy: trackByPostListItemId">
               <tr>
                 <td>{{ post.id }}</td>
                 <td>{{ post.autorNome }}</td>
@@ -199,15 +191,15 @@
                 </td>
               </tr>
               <!-- Comments Dropdown -->
-              <tr *ngIf="expandedPostComments[post.id]" class="comments-row">
+              <tr *ngIf="expandedPostComments()[post.id]" class="comments-row">
                 <td colspan="7">
                   <div class="comments-dropdown">
-                    <div class="comment-item" *ngFor="let c of expandedPostComments[post.id]; trackBy: trackByCommentListItemId">
+                    <div class="comment-item" *ngFor="let c of expandedPostComments()[post.id]; trackBy: trackByCommentListItemId">
                       <strong>{{ c.autorNome }}:</strong> {{ c.texto }}
                       <span class="comment-date">{{ c.createdAt | date:'short' }}</span>
                       <button class="btn-sm btn-danger" (click)="deleteComment(c.id)">&#128465;</button>
                     </div>
-                    <div *ngIf="expandedPostComments[post.id].length === 0">
+                    <div *ngIf="expandedPostComments()[post.id].length === 0">
                       <p>Sem comentarios.</p>
                     </div>
                   </div>
@@ -217,7 +209,7 @@
           </tbody>
         </table>
       </div>
-      <div class="empty" *ngIf="posts.length === 0 && !loading">
+      <div class="empty" *ngIf="posts().length === 0 && !loading()">
         <p>Nenhuma publicacao encontrada.</p>
       </div>
     </div>
@@ -236,7 +228,7 @@
         </div>
       </div>
 
-      <div class="table-container" *ngIf="comments.length > 0">
+      <div class="table-container" *ngIf="comments().length > 0">
         <table>
           <thead>
             <tr>
@@ -249,7 +241,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let c of comments; trackBy: trackByCommentListItemId">
+            <tr *ngFor="let c of comments(); trackBy: trackByCommentListItemId">
               <td>{{ c.id }}</td>
               <td>{{ c.publicacaoId }}</td>
               <td>{{ c.autorNome }}</td>
@@ -262,7 +254,7 @@
           </tbody>
         </table>
       </div>
-      <div class="empty" *ngIf="comments.length === 0 && !loading">
+      <div class="empty" *ngIf="comments().length === 0 && !loading()">
         <p>Nenhum comentario encontrado.</p>
       </div>
     </div>
@@ -273,7 +265,7 @@
         <h2>Top 10 Utilizadores com Mais Bazes</h2>
       </div>
 
-      <div class="table-container" *ngIf="topBazes.length > 0">
+      <div class="table-container" *ngIf="topBazes().length > 0">
         <table>
           <thead>
             <tr>
@@ -284,7 +276,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of topBazes; trackBy: trackByTopBazesUserId; let i = index">
+            <tr *ngFor="let user of topBazes(); trackBy: trackByTopBazesUserId; let i = index">
               <td>{{ i + 1 }}</td>
               <td>{{ user.nome }}</td>
               <td>{{ user.bazesCount }}</td>
@@ -317,7 +309,7 @@
           <button class="btn-primary" (click)="createAdmin()">Criar Admin</button>
           <button class="btn-cancel" (click)="showView('dashboard')">Cancelar</button>
         </div>
-        <p class="message" *ngIf="adminMessage">{{ adminMessage }}</p>
+        <p class="message" *ngIf="adminMessage()">{{ adminMessage() }}</p>
       </div>
     </div>
 
@@ -353,7 +345,7 @@
           <button class="btn-primary" (click)="changeAdminPassword()">Alterar Senha</button>
           <button class="btn-cancel" (click)="showView('dashboard')">Cancelar</button>
         </div>
-        <p class="message" *ngIf="accountMessage">{{ accountMessage }}</p>
+        <p class="message" *ngIf="accountMessage()">{{ accountMessage() }}</p>
       </div>
     </div>
 

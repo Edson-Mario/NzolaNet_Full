@@ -22,11 +22,6 @@ namespace NzolaNet.API.DTOs
         public string ConfirmarSenha { get; set; } = string.Empty;
 
         public string? FotoPerfil { get; set; }
-        public string? Bio { get; set; }
-        public DateTime? DataNascimento { get; set; }
-        public string? Endereco { get; set; }
-        public string? Nacionalidade { get; set; }
-        public string? Sexo { get; set; }
     }
 
     public class LoginDto

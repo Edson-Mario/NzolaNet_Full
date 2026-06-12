@@ -5,77 +5,37 @@
       <p>Registar</p>
     </div>
 
-    <div class="step-indicator">
-      <span [class.active]="step === 1">1</span>
-      <span class="step-divider"></span>
-      <span [class.active]="step === 2">2</span>
-    </div>
-    <p class="step-label">Passo {{ step }} de 2</p>
-
     <form (ngSubmit)="onSubmit()" class="auth-form">
-      <!-- Step 1: Personal Data -->
-      <div *ngIf="step === 1">
-        <div class="form-group">
-          <label>Nome</label>
-          <input type="text" [(ngModel)]="nome" name="nome" required placeholder="Seu nome" />
-        </div>
-
-        <div class="form-group">
-          <label>Data de nascimento</label>
-          <input type="date" [(ngModel)]="dataNascimento" name="dataNascimento" required />
-        </div>
-
-        <div class="form-group">
-          <label>Endereço</label>
-          <input type="text" [(ngModel)]="endereco" name="endereco" required placeholder="Seu endereço" />
-        </div>
-
-        <div class="form-group">
-          <label>Nacionalidade</label>
-          <input type="text" [(ngModel)]="nacionalidade" name="nacionalidade" required placeholder="Sua nacionalidade" />
-        </div>
-
-        <div class="form-group">
-          <label>Sexo</label>
-          <select [(ngModel)]="sexo" name="sexo" required>
-            <option value="" disabled>Selecione o sexo</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" [(ngModel)]="nome" name="nome" required placeholder="Seu nome" />
       </div>
 
-      <!-- Step 2: Account Credentials -->
-      <div *ngIf="step === 2">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" [(ngModel)]="email" name="email" required placeholder="exemplo@email.com" />
-        </div>
-
-        <div class="form-group">
-          <label>Senha</label>
-          <input type="password" [(ngModel)]="senha" name="senha" required minlength="6" placeholder="Mínimo 6 caracteres" />
-        </div>
-
-        <div class="form-group">
-          <label>Confirmar senha</label>
-          <input type="password" [(ngModel)]="confirmSenha" name="confirmSenha" required placeholder="Repita a senha" />
-        </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" name="email" required placeholder="exemplo@email.com" />
       </div>
 
-      <div class="error" *ngIf="error">{{ error }}</div>
-
-      <div class="btn-group">
-        <button *ngIf="step === 2" type="button" class="btn-secondary" (click)="prevStep()">
-          Voltar
-        </button>
-        <button *ngIf="step === 1" type="button" class="btn-primary" (click)="nextStep()">
-          Próximo
-        </button>
-        <button *ngIf="step === 2" type="submit" class="btn-primary" [disabled]="loading">
-          {{ loading ? '...' : 'Registar' }}
-        </button>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" [(ngModel)]="senha" name="senha" required minlength="6" placeholder="Mínimo 6 caracteres" />
       </div>
+
+      <div class="form-group">
+        <label>Confirmar senha</label>
+        <input type="password" [(ngModel)]="confirmSenha" name="confirmSenha" required placeholder="Repita a senha" />
+      </div>
+
+      <div class="form-group">
+        <label>Foto de perfil (opcional)</label>
+        <input type="file" accept="image/*" (change)="onFileSelect($event)" />
+      </div>
+
+      <div class="error" *ngIf="error()">{{ error() }}</div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'A registar...' : 'Registar' }}
+      </button>
     </form>
 
     <div class="auth-footer">

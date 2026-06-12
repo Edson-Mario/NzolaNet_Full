@@ -43,7 +43,7 @@
     </button>
   </div>
 
-  <div class="comments-section" *ngIf="showComments">
+  <div class="comments-section" *ngIf="showComments()">
     <div class="comment-form">
       <input
         type="text"
@@ -51,11 +51,11 @@
         placeholder="Escrever comentário..."
         (keyup.enter)="addComment()"
       />
-      <button (click)="addComment()" [disabled]="commentLoading">&#10148;</button>
+      <button (click)="addComment()" [disabled]="commentLoading()">&#10148;</button>
     </div>
 
     <div class="comments-list">
-      <div class="comment" *ngFor="let c of comments; trackBy: trackByCommentId">
+      <div class="comment" *ngFor="let c of comments(); trackBy: trackByCommentId">
         <a [routerLink]="['/profile', c.utilizadorId]" class="comment-avatar">
           <img *ngIf="c.autorFoto" [src]="c.autorFoto" alt="avatar" loading="lazy" />
           <svg *ngIf="!c.autorFoto" class="avatar-fallback-svg" viewBox="0 0 24 24" fill="currentColor">

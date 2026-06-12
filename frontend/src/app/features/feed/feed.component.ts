@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { SignalRService } from '../../core/services/signalr.service';
@@ -19,8 +19,8 @@ export class FeedComponent implements OnInit, OnDestroy {
   private signalr = inject(SignalRService);
   private subs: Subscription[] = [];
 
-  posts: Post[] = [];
-  loading = true;
+  posts = signal<Post[]>([]);
+  loading = signal(true);
   page = 1;
   feedType: 'following' | 'all' = 'following';
 
@@ -30,25 +30,23 @@ export class FeedComponent implements OnInit, OnDestroy {
 
     this.subs.push(
       this.signalr.newPost$.subscribe(post => {
-        if (!this.posts.find(p => p.id === post.id)) {
-          this.posts.unshift(post);
-        }
+        this.posts.update(p => {
+          if (p.find(x => x.id === post.id)) return p;
+          return [post, ...p];
+        });
       }),
       this.signalr.postDeleted$.subscribe(id => {
-        this.posts = this.posts.filter(p => p.id !== id);
+        this.posts.update(p => p.filter(x => x.id !== id));
       }),
       this.signalr.bazeToggled$.subscribe(({ post: postId, bazed, count }) => {
-        const post = this.posts.find(p => p.id === postId);
-        if (post) {
-          post.bazesCount = count;
-          post.isBazed = bazed;
-        }
+        this.posts.update(p =>
+          p.map(x => x.id === postId ? { ...x, bazesCount: count, isBazed: bazed } : x)
+        );
       }),
       this.signalr.postUpdated$.subscribe(updated => {
-        const index = this.posts.findIndex(p => p.id === updated.id);
-        if (index !== -1) {
-          this.posts[index] = updated;
-        }
+        this.posts.update(p =>
+          p.map(x => x.id === updated.id ? updated : x)
+        );
       }),
       this.signalr.refreshFeed$.subscribe(() => this.refreshPosts())
     );
@@ -61,7 +59,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   switchFeed(type: 'following' | 'all'): void {
     this.feedType = type;
     this.page = 1;
-    this.loading = true;
+    this.loading.set(true);
     this.loadPosts();
   }
 
@@ -72,10 +70,10 @@ export class FeedComponent implements OnInit, OnDestroy {
 
     request$.subscribe({
       next: (posts) => {
-        this.posts = posts;
-        this.loading = false;
+        this.posts.set(posts);
+        this.loading.set(false);
       },
-      error: () => this.loading = false
+      error: () => this.loading.set(false)
     });
   }
 
@@ -86,7 +84,7 @@ export class FeedComponent implements OnInit, OnDestroy {
 
     request$.subscribe({
       next: (posts) => {
-        this.posts = posts;
+        this.posts.set(posts);
       }
     });
   }
@@ -96,12 +94,13 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   onPostCreated(post: Post): void {
-    if (!this.posts.find(p => p.id === post.id)) {
-      this.posts.unshift(post);
-    }
+    this.posts.update(p => {
+      if (p.find(x => x.id === post.id)) return p;
+      return [post, ...p];
+    });
   }
 
   onPostDeleted(id: number): void {
-    this.posts = this.posts.filter(p => p.id !== id);
+    this.posts.update(p => p.filter(x => x.id !== id));
   }
 }

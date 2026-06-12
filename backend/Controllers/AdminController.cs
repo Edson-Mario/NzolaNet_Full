@@ -45,8 +45,7 @@ namespace NzolaNet.API.Controllers
             {
                 query = query.Where(u =>
                     u.Nome.Contains(search) ||
-                    u.Email.Contains(search) ||
-                    (u.Endereco != null && u.Endereco.Contains(search)));
+                    u.Email.Contains(search));
             }
 
             var users = await query
@@ -60,10 +59,6 @@ namespace NzolaNet.API.Controllers
                     Email = u.Email,
                     Role = u.Role,
                     IsActive = u.IsActive,
-                    DataNascimento = u.DataNascimento,
-                    Endereco = u.Endereco,
-                    Nacionalidade = u.Nacionalidade,
-                    Sexo = u.Sexo,
                     CreatedAt = u.CreatedAt,
                     PublicacoesCount = u.Publicacoes.Count,
                     BazesCount = u.Bazes.Count,
@@ -92,10 +87,6 @@ namespace NzolaNet.API.Controllers
                     Email = u.Email,
                     Role = u.Role,
                     IsActive = u.IsActive,
-                    DataNascimento = u.DataNascimento,
-                    Endereco = u.Endereco,
-                    Nacionalidade = u.Nacionalidade,
-                    Sexo = u.Sexo,
                     CreatedAt = u.CreatedAt,
                     PublicacoesCount = u.Publicacoes.Count,
                     BazesCount = u.Bazes.Count,
@@ -124,10 +115,6 @@ namespace NzolaNet.API.Controllers
                     Email = u.Email,
                     Role = u.Role,
                     IsActive = u.IsActive,
-                    DataNascimento = u.DataNascimento,
-                    Endereco = u.Endereco,
-                    Nacionalidade = u.Nacionalidade,
-                    Sexo = u.Sexo,
                     CreatedAt = u.CreatedAt,
                     PublicacoesCount = u.Publicacoes.Count,
                     BazesCount = u.Bazes.Count,

@@ -33,11 +33,6 @@ namespace NzolaNet.API.Services
                 Email = dto.Email,
                 Senha = BCrypt.Net.BCrypt.HashPassword(dto.Senha),
                 FotoPerfil = dto.FotoPerfil,
-                Bio = dto.Bio,
-                DataNascimento = dto.DataNascimento,
-                Endereco = dto.Endereco,
-                Nacionalidade = dto.Nacionalidade,
-                Sexo = dto.Sexo
             };
 
             await _userRepo.CreateAsync(user);
